@@ -1,0 +1,75 @@
+2025-11-04_18-44-42 - ?? Launching Jerzii AI Automated Profit System...
+2025-11-04_18-44-43 - ? Configuring pm2-logrotate...
+2025-11-04_18-44-51 - ? Port 3003 is free.
+2025-11-04_18-44-53 - ? Started automated-profit-system on port 3003
+2025-11-04_18-44-53 - ? Logs: logs\automated-profit-system-out.log (stdout), logs\automated-profit-system-err.log (stderr)
+2025-11-04_18-44-53 - ? Port 3004 is free.
+2025-11-04_18-44-54 - ? Started automated-profit-dashboard on port 3004
+2025-11-04_18-44-54 - ? Logs: logs\automated-profit-dashboard-out.log (stdout), logs\automated-profit-dashboard-err.log (stderr)
+2025-11-04_18-44-55 - ?? PM2 process list saved
+2025-11-04_18-44-56 - ? PM2 auto-start configured
+2025-11-04_19-00-51 - ?? Launching Jerzii AI Automated Profit System...
+2025-11-04_19-00-51 - ?? Installing pm2-logrotate...
+2025-11-04_19-01-09 - ? Configuring pm2-logrotate...
+2025-11-04_19-01-17 - ? Port 3002 is free.
+2025-11-04_19-01-19 - ? Started automated-profit-system on port 3002
+2025-11-04_19-01-19 - ? Logs: logs\automated-profit-system-out.log (stdout), logs\automated-profit-system-err.log (stderr)
+2025-11-04_19-01-19 - ? Port 3005 is free.
+2025-11-04_19-01-20 - ? Started automated-profit-dashboard on port 3005
+2025-11-04_19-01-21 - ? Logs: logs\automated-profit-dashboard-out.log (stdout), logs\automated-profit-dashboard-err.log (stderr)
+2025-11-04_19-01-22 - ? PM2 auto-start configured
+2025-11-04_19-01-24 - ? Dashboard opened in browser at http://localhost:3005
+2025-11-04_19-15-15 - ?? Launching Jerzii AI Automated Profit System...
+2025-11-04_19-15-15 - ? Node.js found: v22.21.0
+2025-11-04_19-15-15 - ? npm found: 10.9.4
+2025-11-04_19-15-15 - ? PM2 found: 6.0.13
+2025-11-04_19-15-16 - ?? Installing pm2-logrotate...
+2025-11-04_19-15-38 - ? Configuring pm2-logrotate...
+2025-11-04_19-15-47 - ? Port 3002 is free.
+2025-11-04_19-15-49 - ? Started automated-profit-system on port 3002
+2025-11-04_19-15-49 - ? Logs: logs\automated-profit-system-out.log (stdout), logs\automated-profit-system-err.log (stderr)
+2025-11-04_19-15-49 - ? Port 3003 is free.
+2025-11-04_19-15-52 - ? Started automated-profit-dashboard on port 3003
+2025-11-04_19-15-52 - ? Logs: logs\automated-profit-dashboard-out.log (stdout), logs\automated-profit-dashboard-err.log (stderr)
+2025-11-04_19-15-53 - ? PM2 auto-start configured
+2025-11-04_19-15-55 - ? Dashboard opened in browser at http://localhost:3003
+2025-11-04_19-20-12 - ?? Launching JERZII AI...
+2025-11-04_19-20-12 - ? Node.js found
+2025-11-04_19-20-12 - ? npm found
+2025-11-04_19-20-13 - ? pm2 found globally
+2025-11-04_19-20-14 - ? pm2-windows-startup found globally
+2025-11-04_19-20-14 - ?? Installing pm2-logrotate...
+2025-11-04_19-20-27 - ? Configuring pm2-logrotate...
+2025-11-04_19-20-34 - ? Landing page created at src/public/index.html
+2025-11-04_19-20-35 - ? ERROR: Cannot overwrite variable PID because it is read-only or constant.
+2025-11-04_19-23-14 - ?? Using existing .env file
+2025-11-04_19-23-14 - ?? Launching JERZII AI...
+2025-11-04_19-23-14 - ? Node.js found
+2025-11-04_19-23-14 - ? npm found
+2025-11-04_19-23-15 - ? pm2 found
+2025-11-04_19-23-16 - ? pm2-windows-startup found
+2025-11-04_19-23-16 - ?? Installing pm2-logrotate...
+2025-11-04_19-23-32 - ? Configuring pm2-logrotate...
+2025-11-04_19-23-38 - ? ERROR: Cannot overwrite variable PID because it is read-only or constant.
+2025-11-04_19-52-23 - ?? Launching Jerzii AI Automated Profit System...
+2025-11-04_19-52-24 - ?? Installing pm2-logrotate...
+2025-11-04_19-52-40 - ? Configuring pm2-logrotate...
+2025-11-04_19-52-48 - ??  Port 3002 in use — killing PID 20020...
+2025-11-04_19-52-50 - ? Started automated-profit-system on port 3002
+2025-11-04_19-52-50 - ? Logs: logs\automated-profit-system-out.log (stdout), logs\automated-profit-system-err.log (stderr)
+2025-11-04_19-52-50 - ? Port 3003 is free.
+2025-11-04_19-52-52 - ? Started automated-profit-dashboard on port 3003
+2025-11-04_19-52-52 - ? Logs: logs\automated-profit-dashboard-out.log (stdout), logs\automated-profit-dashboard-err.log (stderr)
+2025-11-04_19-52-53 - ? PM2 auto-start configured
+2025-11-04_19-52-55 - ? Dashboard opened in browser at http://localhost:3003
+2025-11-04_21-15-31 - ?? Launching Jerzii AI Automated Profit System...
+2025-11-04_21-15-31 - ?? Installing pm2-logrotate...
+2025-11-04_21-16-12 - ? Configuring pm2-logrotate...
+2025-11-04_21-16-21 - ? Port 3002 is free.
+2025-11-04_21-16-23 - ? Started automated-profit-system on port 3002
+2025-11-04_21-16-23 - ? Logs: logs\automated-profit-system-out.log (stdout), logs\automated-profit-system-err.log (stderr)
+2025-11-04_21-16-23 - ? Port 3003 is free.
+2025-11-04_21-16-25 - ? Started automated-profit-dashboard on port 3003
+2025-11-04_21-16-25 - ? Logs: logs\automated-profit-dashboard-out.log (stdout), logs\automated-profit-dashboard-err.log (stderr)
+2025-11-04_21-16-27 - ? PM2 auto-start configured
+2025-11-04_21-16-29 - ? Dashboard opened in browser at http://localhost:3003

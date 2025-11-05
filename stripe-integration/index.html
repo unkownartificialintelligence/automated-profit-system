@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stripe Test Payment</title>
+  <script src='https://js.stripe.com/v3/'></script>
+</head>
+<body>
+  <h1>Stripe Test Payment</h1>
+  <button id='payBtn'>Pay </button>
+  <script>
+    const stripe = Stripe('');
+
+    document.getElementById('payBtn').addEventListener('click', async () => {
+      const res = await fetch('/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: 1000, currency: 'usd' })
+      });
+      const data = await res.json();
+      const { error } = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: { card: { token: 'tok_visa' } }
+      });
+      if (error) alert('Payment failed: ' + error.message);
+      else alert('Payment successful!');
+    });
+  </script>
+</body>
+</html>

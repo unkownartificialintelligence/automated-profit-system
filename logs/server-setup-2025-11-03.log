@@ -1,0 +1,86 @@
+2025-11-03_01-07-42 - Using port 3001
+2025-11-03_01-07-42 - ? Port 3001 is free.
+2025-11-03_01-07-43 - Deleted old PM2 instance (if any): automated-profit-system
+2025-11-03_01-07-43 - Set environment variable PORT=3001
+2025-11-03_01-07-43 - ?? Installing pm2-logrotate...
+2025-11-03_01-07-55 - ? Configuring pm2-logrotate...
+2025-11-03_01-08-02 - Started server: src/server.js with PM2 name: automated-profit-system
+2025-11-03_01-08-02 - Saved PM2 process list for auto-start
+2025-11-03_01-08-03 - Configured PM2 auto-start on Windows login
+2025-11-03_01-08-04 - PM2 Status:
+GöîGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÉ Göé id Göé name                       Göé namespace   Göé version Göé mode    Göé pid      Göé uptime Göé Gå¦    Göé status    Göé cpu      Göé mem      Göé user     Göé watching Göé Gö£GöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöñ Göé 1  Göé automated-profit-system    Göé default     Göé 1.0.0   Göé fork    Göé 13236    Göé 0s     Göé 3    Göé online    Göé 3.2%     Göé 60.0mb   Göé jerzi    Göé enabled  Göé GööGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÿ Module GöîGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¼GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÉ Göé id Göé module                       Göé version       Göé pid      Göé status   Göé Gå¦    Göé cpu      Göé mem      Göé user     Göé Gö£GöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö+GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöñ Göé 0  Göé pm2-logrotate                Göé 3.0.0         Göé 30008    Göé online   Göé 7    Göé 0%       Göé 58.1mb   Göé jerzi    Göé GööGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGö¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÿ
+2025-11-03_01-11-26 - Updated .env file: .env
+2025-11-03_01-12-14 - Using port 3002
+2025-11-03_01-12-14 - ? Port 3002 is free.
+2025-11-03_01-12-15 - Deleted old PM2 instance (if any): automated-profit-system
+2025-11-03_01-12-15 - Set environment variable PORT=3002
+2025-11-03_01-12-15 - Updated .env file: .env
+2025-11-03_01-12-15 - ?? Installing pm2-logrotate...
+2025-11-03_01-12-30 - ? Configuring pm2-logrotate...
+2025-11-03_01-12-36 - Started server: src/server.js with PM2 name: automated-profit-system
+2025-11-03_01-12-36 - ? Logs: logs\automated-profit-system-out.log (stdout), logs\automated-profit-system-err.log (stderr)
+2025-11-03_01-12-37 - Saved PM2 process list for auto-start
+2025-11-03_01-12-38 - Configured PM2 auto-start on Windows login
+2025-11-03_01-12-38 - ? ERROR: Cannot convert the JSON string because a dictionary that was converted from the string contains the duplicated keys 'USERNAME' and 'username'.
+2025-11-03_01-13-39 - PM2 Status:
+ | Status:  | PID:  | CPU: % | MEM: 0 MB
+2025-11-03_01-14-26 - PM2 Status:
+ | Status: N/A | PID: 30764 | CPU: 0% | MEM: 0 MB
+2025-11-03_01-15-30 - PM2 Status:
+ | Status: N/A | PID: N/A | CPU: 0% | MEM: 0 MB
+2025-11-03_01-16-35 - PM2 Status:
+pm2-logrotate | Status: online | PID: 35416 | CPU: 0% | MEM: 51.58 MB automated-profit-system | Status: stopped | PID: 33940 | CPU: 0% | MEM: 0 MB
+2025-11-03_01-33-18 - Using port 3001
+2025-11-03_01-33-18 - ? Port 3001 is free.
+2025-11-03_01-33-19 - Deleted old PM2 instance (if any): automated-profit-system
+2025-11-03_01-33-19 - Set environment variable PORT=3001
+2025-11-03_01-33-19 - Updated .env file: .env
+2025-11-03_01-33-19 - ?? Installing pm2-logrotate...
+2025-11-03_01-33-45 - ? Configuring pm2-logrotate...
+2025-11-03_01-33-51 - Started server: src/server.js with PM2 name: automated-profit-system
+2025-11-03_01-33-51 - ? Logs: logs\automated-profit-system-out.log (stdout), logs\automated-profit-system-err.log (stderr)
+2025-11-03_01-33-52 - Saved PM2 process list for auto-start
+2025-11-03_01-33-53 - Configured PM2 auto-start on Windows login
+2025-11-03_01-50-42 - Using port 3002
+2025-11-03_01-50-42 - ? Port 3002 is free.
+2025-11-03_01-50-44 - Deleted old PM2 instance (if any): automated-profit-system
+2025-11-03_01-50-44 - Set environment variable PORT=3002
+2025-11-03_01-50-44 - Updated .env file: .env
+2025-11-03_01-50-44 - ?? Installing pm2-logrotate...
+2025-11-03_01-51-07 - ? Configuring pm2-logrotate...
+2025-11-03_01-51-14 - Started server: src/server.js with PM2 name: automated-profit-system
+2025-11-03_01-51-14 - ? Logs: logs\automated-profit-system-out.log (stdout), logs\automated-profit-system-err.log (stderr)
+2025-11-03_01-51-14 - Saved PM2 process list for auto-start
+2025-11-03_01-51-15 - Configured PM2 auto-start on Windows login
+2025-11-03_01-52-31 - ? Port 3001 is free.
+2025-11-03_01-52-31 - ? Port 4000 is free.
+2025-11-03_01-52-33 - ?? Installing pm2-logrotate...
+2025-11-03_01-52-45 - ? Configuring pm2-logrotate...
+2025-11-03_01-52-52 - Started automated-profit-system on port 3001 | Logs: logs\automated-profit-system-out.log (stdout), logs\automated-profit-system-err.log (stderr)
+2025-11-03_01-52-53 - Started automated-profit-dashboard on port 4000 | Logs: logs\automated-profit-dashboard-out.log (stdout), logs\automated-profit-dashboard-err.log (stderr)
+2025-11-03_01-52-54 - ? PM2 processes saved & auto-start configured
+2025-11-03_01-54-49 - ? Port 3001 is free.
+2025-11-03_01-54-49 - ? Port 4000 is free.
+2025-11-03_01-54-51 - ?? Installing pm2-logrotate...
+2025-11-03_01-55-03 - ? Configuring pm2-logrotate...
+2025-11-03_01-55-10 - Started automated-profit-system on port 3001 | Logs: logs\automated-profit-system-out.log (stdout), logs\automated-profit-system-err.log (stderr)
+2025-11-03_01-55-12 - Started automated-profit-dashboard on port 4000 | Logs: logs\automated-profit-dashboard-out.log (stdout), logs\automated-profit-dashboard-err.log (stderr)
+2025-11-03_01-55-13 - ? PM2 processes saved & auto-start configured
+2025-11-03_01-58-41 - ? Port 3001 is free.
+2025-11-03_01-58-41 - Using server port 3001
+2025-11-03_01-58-41 - ? Port 3003 is free.
+2025-11-03_01-58-41 - Using dashboard port 3003
+2025-11-03_01-58-41 - .env updated with server and dashboard ports
+2025-11-03_01-58-42 - ?? Installing pm2-logrotate...
+2025-11-03_01-58-58 - ? Configuring pm2-logrotate...
+2025-11-03_01-59-07 - PM2 processes started and saved
+2025-11-03_01-59-08 - PM2 auto-start configured
+2025-11-03_02-01-10 - ?? Installing pm2-logrotate...
+2025-11-03_02-01-22 - ? Configuring pm2-logrotate...
+2025-11-03_02-01-29 - ? ERROR: The term 'Start-Server' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+2025-11-03_02-03-03 - ? Port 3002 is free.
+2025-11-03_02-03-05 - ? Started automated-profit-system on port 3002
+2025-11-03_02-03-05 - ? Logs: logs\automated-profit-system-out.log (stdout), logs\automated-profit-system-err.log (stderr)
+2025-11-03_02-03-05 - ? Port 3002 is free.
+2025-11-03_02-03-06 - ? Started automated-profit-dashboard on port 3002
+2025-11-03_02-03-06 - ? Logs: logs\automated-profit-dashboard-out.log (stdout), logs\automated-profit-dashboard-err.log (stderr)
