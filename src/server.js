@@ -10,6 +10,7 @@ import os from "os";
 import { readFileSync } from "fs";
 import teamProfitsRoutes from "./routes/team-profits.js";
 import productsRoutes from "./routes/products.js";
+import personalRoutes from "./routes/personal.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -192,6 +193,10 @@ app.use("/api/team", teamProfitsRoutes);
 // === PRODUCT RESEARCH & PROFIT TOOLS ===
 // Trending products, profit calculator, pricing optimizer
 app.use("/api/products", productsRoutes);
+
+// === PERSONAL ACCOUNT ROUTES ===
+// Owner's personal sales tracking (no revenue share - keep 100%)
+app.use("/api/personal", personalRoutes);
 
 // === FUTURE FEATURES ===
 // 🧠 AI-driven profit optimization
