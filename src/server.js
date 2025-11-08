@@ -9,6 +9,7 @@ import { fileURLToPath } from "url";
 import os from "os";
 import { readFileSync } from "fs";
 import teamProfitsRoutes from "./routes/team-profits.js";
+import productsRoutes from "./routes/products.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -187,6 +188,10 @@ app.get("/api/printful/products", async (req, res) => {
 // === TEAM PROFIT SHARING ROUTES ===
 // Tier-based team management with automatic 25% revenue share
 app.use("/api/team", teamProfitsRoutes);
+
+// === PRODUCT RESEARCH & PROFIT TOOLS ===
+// Trending products, profit calculator, pricing optimizer
+app.use("/api/products", productsRoutes);
 
 // === FUTURE FEATURES ===
 // 🧠 AI-driven profit optimization
