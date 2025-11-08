@@ -6,9 +6,17 @@ import morgan from "morgan";
 import axios from "axios";
 import path from "path";
 import { fileURLToPath } from "url";
-import sqlite3 from "sqlite3";
 import os from "os";
 import { readFileSync } from "fs";
+
+// Try to import sqlite3, but don't fail if it's not available
+let sqlite3;
+try {
+  sqlite3 = (await import("sqlite3")).default;
+} catch (error) {
+  console.warn("⚠️  SQLite3 module not available, database health checks will be skipped");
+  console.warn("   Run 'npm rebuild sqlite3' to fix this");
+}
 
 dotenv.config();
 
@@ -55,30 +63,37 @@ app.get("/api/health", async (req, res) => {
   };
 
   // === CHECK DATABASE ===
-  try {
-    const dbPath = path.join(__dirname, "../database.db");
-    await new Promise((resolve, reject) => {
-      const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READONLY, (err) => {
-        if (err) {
-          healthCheck.checks.database = {
-            status: "unhealthy",
-            message: "Database connection failed: " + err.message,
-          };
-          healthCheck.success = false;
-          reject(err);
-        } else {
-          db.close(() => {
+  if (!sqlite3) {
+    healthCheck.checks.database = {
+      status: "warning",
+      message: "SQLite3 module not available - run 'npm rebuild sqlite3'",
+    };
+  } else {
+    try {
+      const dbPath = path.join(__dirname, "../database.db");
+      await new Promise((resolve, reject) => {
+        const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READONLY, (err) => {
+          if (err) {
             healthCheck.checks.database = {
-              status: "healthy",
-              message: "Database connected successfully",
+              status: "unhealthy",
+              message: "Database connection failed: " + err.message,
             };
-            resolve();
-          });
-        }
+            healthCheck.success = false;
+            reject(err);
+          } else {
+            db.close(() => {
+              healthCheck.checks.database = {
+                status: "healthy",
+                message: "Database connected successfully",
+              };
+              resolve();
+            });
+          }
+        });
       });
-    });
-  } catch (error) {
-    console.error("Database health check failed:", error.message);
+    } catch (error) {
+      console.error("Database health check failed:", error.message);
+    }
   }
 
   // === CHECK PRINTFUL API ===
