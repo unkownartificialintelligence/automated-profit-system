@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon --watch src src/server.js",
+    "setup:team-profits": "node src/database/init-team-profits.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
