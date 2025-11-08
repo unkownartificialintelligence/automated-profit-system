@@ -378,8 +378,86 @@ npm run dev
 3. Check Vercel deployment logs
 4. Verify all prerequisites are installed
 
+## 🔐 Admin Monitoring Dashboard
+
+A comprehensive admin panel for monitoring all clients, team members, and system health.
+
+### Quick Access
+
+**Local:** `http://localhost:5173/admin`
+**Production:** `https://your-domain.vercel.app/admin`
+
+### Default Credentials
+
+```
+Email: admin@jerzii.ai
+Password: admin123
+```
+
+**⚠️ Change these immediately after first login!**
+
+### Setup Admin Panel
+
+1. **Initialize database:**
+   ```bash
+   node setup-admin.js
+   ```
+
+2. **Set JWT secret in `.env`:**
+   ```env
+   JWT_SECRET=your_secure_random_secret_here
+   ```
+
+3. **Access admin panel:**
+   - Navigate to `/admin` route
+   - Login with default credentials
+   - Change password immediately
+
+### Admin Features
+
+**Overview Tab:**
+- Total clients and revenue statistics
+- System health monitoring
+- Package distribution
+- Recent system logs
+
+**Clients Tab:**
+- View all clients with details
+- Manage client information
+- View/hide API keys
+- Track subscription status
+- Monitor monthly revenue
+
+**Team Members Tab:**
+- Manage admin users
+- Add/edit/delete team members
+- Role-based access control
+- Activity tracking
+
+**Activity Log:**
+- Monitor all system actions
+- Track who did what and when
+- Client operation history
+- System change audit trail
+
+**System Tab:**
+- Real-time server health
+- Memory usage metrics
+- Database connection status
+- System uptime monitoring
+
+### Complete Admin Guide
+
+See **[ADMIN-GUIDE.md](./ADMIN-GUIDE.md)** for complete documentation including:
+- Full feature walkthrough
+- API endpoint reference
+- Security best practices
+- Troubleshooting guide
+- Deployment instructions
+
 ## 📚 Additional Documentation
 
+- **[ADMIN-GUIDE.md](./ADMIN-GUIDE.md)** - Complete admin panel guide
 - **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Detailed deployment guide
 - **[QUICK-REFERENCE.txt](./QUICK-REFERENCE.txt)** - Command cheat sheet
 - **[TEAM_ONBOARDING.md](./TEAM_ONBOARDING.md)** - Team member setup

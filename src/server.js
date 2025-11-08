@@ -6,6 +6,7 @@ import morgan from "morgan";
 import axios from "axios";
 import path from "path";
 import { fileURLToPath } from "url";
+import adminRouter from "./routes/admin.js";
 
 dotenv.config();
 
@@ -21,6 +22,9 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+
+// === ADMIN ROUTES ===
+app.use("/api/admin", adminRouter);
 
 // === HEALTH CHECK ===
 app.get("/api/health", (req, res) => {

@@ -222,4 +222,117 @@ router.get('/analytics/aggregate', adminAuth, (req, res) => {
   );
 });
 
+// Get all admin users
+router.get('/users', adminAuth, (req, res) => {
+  db.all(
+    'SELECT id, email, name, role, created_at FROM admin_users ORDER BY created_at DESC',
+    [],
+    (err, admins) => {
+      if (err) return res.status(500).json({ success: false, message: 'Server error' });
+      res.json({ success: true, admins });
+    }
+  );
+});
+
+// Create new admin user
+router.post('/users', adminAuth, async (req, res) => {
+  const { email, password, name, role = 'admin' } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    db.run(
+      'INSERT INTO admin_users (email, password, name, role) VALUES (?, ?, ?, ?)',
+      [email, hashedPassword, name, role],
+      function(err) {
+        if (err) {
+          if (err.message.includes('UNIQUE')) {
+            return res.status(400).json({ success: false, message: 'Email already exists' });
+          }
+          return res.status(500).json({ success: false, message: 'Error creating admin user' });
+        }
+
+        // Log activity
+        db.run(
+          'INSERT INTO team_activity (admin_id, action, details) VALUES (?, ?, ?)',
+          [req.adminId, 'admin_created', `Created admin user: ${email}`]
+        );
+
+        res.json({ success: true, adminId: this.lastID, message: 'Admin user created successfully' });
+      }
+    );
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// Update admin user
+router.put('/users/:id', adminAuth, async (req, res) => {
+  const { id } = req.params;
+  const updates = { ...req.body };
+
+  // If password is being updated, hash it
+  if (updates.password) {
+    updates.password = await bcrypt.hash(updates.password, 10);
+  }
+
+  const fields = Object.keys(updates).map(key => `${key} = ?`).join(', ');
+  const values = [...Object.values(updates), id];
+
+  db.run(
+    `UPDATE admin_users SET ${fields} WHERE id = ?`,
+    values,
+    function(err) {
+      if (err) return res.status(500).json({ success: false, message: 'Error updating admin user' });
+
+      // Log activity
+      db.run(
+        'INSERT INTO team_activity (admin_id, action, details) VALUES (?, ?, ?)',
+        [req.adminId, 'admin_updated', `Updated admin user ID: ${id}`]
+      );
+
+      res.json({ success: true, message: 'Admin user updated successfully' });
+    }
+  );
+});
+
+// Delete admin user
+router.delete('/users/:id', adminAuth, (req, res) => {
+  const { id } = req.params;
+
+  // Prevent deleting yourself
+  if (parseInt(id) === req.adminId) {
+    return res.status(400).json({ success: false, message: 'Cannot delete your own account' });
+  }
+
+  db.run('DELETE FROM admin_users WHERE id = ?', [id], function(err) {
+    if (err) return res.status(500).json({ success: false, message: 'Error deleting admin user' });
+
+    // Log activity
+    db.run(
+      'INSERT INTO team_activity (admin_id, action, details) VALUES (?, ?, ?)',
+      [req.adminId, 'admin_deleted', `Deleted admin user ID: ${id}`]
+    );
+
+    res.json({ success: true, message: 'Admin user deleted successfully' });
+  });
+});
+
+// Delete client
+router.delete('/clients/:id', adminAuth, (req, res) => {
+  const { id } = req.params;
+
+  db.run('DELETE FROM clients WHERE id = ?', [id], function(err) {
+    if (err) return res.status(500).json({ success: false, message: 'Error deleting client' });
+
+    // Log activity
+    db.run(
+      'INSERT INTO team_activity (admin_id, action, client_id, details) VALUES (?, ?, ?, ?)',
+      [req.adminId, 'client_deleted', id, `Deleted client ID: ${id}`]
+    );
+
+    res.json({ success: true, message: 'Client deleted successfully' });
+  });
+});
+
 export default router;
