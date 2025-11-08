@@ -1,0 +1,35 @@
+﻿AUTOMATED PROFIT SYSTEM - QUICK REFERENCE
+
+DAILY WORKFLOW
+--------------
+.\Quick-Deploy.ps1
+
+
+FIX TEAM ACCESS ERROR
+---------------------
+.\Vercel-AccountSwitcher.ps1 -Mode personal
+
+
+CHECK STATUS
+------------
+.\Vercel-AccountSwitcher.ps1 -Mode status
+
+
+SWITCH TO TEAM
+--------------
+.\Vercel-AccountSwitcher.ps1 -Mode team
+
+
+COMMON FIXES
+------------
+Team Access Error:     .\Vercel-AccountSwitcher.ps1 -Mode personal
+Git Not Found:         Install from https://git-scm.com/download/win
+Vercel Not Found:      npm install -g vercel
+Not Logged In:         vercel login
+
+
+MANUAL DOWNLOADS NEEDED
+-----------------------
+• Deploy-AutomatedProfitSystem.ps1
+• Diagnose-Deployment.ps1
+(Available in chat above)
