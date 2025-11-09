@@ -1,8 +1,222 @@
 import express from 'express';
 import axios from 'axios';
 import googleTrends from 'google-trends-api';
+import { writeFileSync, readFileSync, existsSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// =====================================================
+// SETUP & CONFIGURATION ENDPOINTS
+// =====================================================
+
+// POST /api/automation/setup/printful-key
+// Configure Printful API key and save to .env
+router.post('/setup/printful-key', async (req, res) => {
+  try {
+    const { api_key } = req.body;
+
+    if (!api_key || api_key.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        message: 'API key is required',
+        instructions: {
+          step_1: 'Go to https://www.printful.com/dashboard/settings',
+          step_2: 'Click "API" in sidebar',
+          step_3: 'Click "Enable API Access"',
+          step_4: 'Copy your API key',
+          step_5: 'Send it here with: curl -X POST http://localhost:3003/api/automation/setup/printful-key -H "Content-Type: application/json" -d \'{"api_key":"YOUR_KEY"}\''
+        }
+      });
+    }
+
+    const printfulApiKey = api_key.trim();
+
+    // Validate the key by testing against Printful API
+    let isValid = false;
+    let validationMessage = '';
+
+    try {
+      const response = await axios.get('https://api.printful.com/store/products', {
+        headers: {
+          'Authorization': `Bearer ${printfulApiKey}`
+        }
+      });
+      isValid = true;
+      validationMessage = `Connected to Printful successfully! You have ${response.data.result?.length || 0} products.`;
+    } catch (error) {
+      if (error.response?.status === 401) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid Printful API key',
+          error: 'API key was rejected by Printful. Please check your key and try again.',
+          get_key_at: 'https://www.printful.com/dashboard/settings'
+        });
+      } else {
+        // Network error, but save anyway
+        isValid = true;
+        validationMessage = 'Could not validate due to network issue, but API key saved.';
+      }
+    }
+
+    // Save to .env file
+    const envPath = join(__dirname, '../../.env');
+    let envContent = '';
+
+    if (existsSync(envPath)) {
+      envContent = readFileSync(envPath, 'utf8');
+    }
+
+    // Update or add PRINTFUL_API_KEY
+    if (envContent.includes('PRINTFUL_API_KEY=')) {
+      envContent = envContent.replace(
+        /PRINTFUL_API_KEY=.*/,
+        `PRINTFUL_API_KEY=${printfulApiKey}`
+      );
+    } else {
+      envContent += `\n# Printful API Configuration\nPRINTFUL_API_KEY=${printfulApiKey}\n`;
+    }
+
+    // Add default env vars if not present
+    if (!envContent.includes('PORT=')) {
+      envContent += '\nPORT=3003\n';
+    }
+    if (!envContent.includes('NODE_ENV=')) {
+      envContent += 'NODE_ENV=production\n';
+    }
+
+    writeFileSync(envPath, envContent);
+
+    // Update process.env for current session
+    process.env.PRINTFUL_API_KEY = printfulApiKey;
+
+    const maskedKey = `${printfulApiKey.substring(0, 8)}...${printfulApiKey.substring(printfulApiKey.length - 4)}`;
+
+    res.json({
+      success: true,
+      message: '✅ Printful API key configured successfully!',
+      validation: validationMessage,
+      configuration: {
+        api_key_masked: maskedKey,
+        saved_to: '.env file',
+        location: envPath
+      },
+      next_steps: [
+        '1. Your API key is now saved and active',
+        '2. Test with: curl http://localhost:3003/api/automation/setup/test',
+        '3. Discover products: curl http://localhost:3003/api/automation/discover/trending-products',
+        '4. Create your first product using the automation guide'
+      ],
+      automation_ready: true
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to configure API key',
+      error: error.message
+    });
+  }
+});
+
+// GET /api/automation/setup/test
+// Test Printful API connection and all automation features
+router.get('/setup/test', async (req, res) => {
+  try {
+    const printfulApiKey = process.env.PRINTFUL_API_KEY;
+    const tests = {
+      printful_api_configured: false,
+      printful_connection: 'not tested',
+      trending_products: 'not tested',
+      email_templates: 'not tested',
+      automation_ready: false
+    };
+
+    // Test 1: Check if API key exists
+    if (!printfulApiKey) {
+      return res.json({
+        success: false,
+        message: 'Printful API key not configured',
+        tests,
+        action_required: 'Configure your API key first',
+        setup_url: 'POST http://localhost:3003/api/automation/setup/printful-key'
+      });
+    }
+
+    tests.printful_api_configured = true;
+
+    // Test 2: Test Printful connection
+    try {
+      const response = await axios.get('https://api.printful.com/store/products', {
+        headers: {
+          'Authorization': `Bearer ${printfulApiKey}`
+        }
+      });
+      tests.printful_connection = `✅ Connected (${response.data.result?.length || 0} products)`;
+    } catch (error) {
+      tests.printful_connection = '❌ Failed - Invalid API key';
+    }
+
+    // Test 3: Test trending products
+    try {
+      const trendResponse = await axios.get('http://localhost:3003/api/automation/discover/trending-products');
+      tests.trending_products = `✅ Working (${trendResponse.data.discovered} products found)`;
+    } catch (error) {
+      tests.trending_products = '❌ Failed';
+    }
+
+    // Test 4: Test email templates
+    try {
+      const emailResponse = await axios.post('http://localhost:3003/api/automation/outreach/email-template', {
+        product_name: 'Test Product'
+      });
+      tests.email_templates = '✅ Working';
+    } catch (error) {
+      tests.email_templates = '❌ Failed';
+    }
+
+    tests.automation_ready = tests.printful_connection.includes('✅') &&
+                             tests.trending_products.includes('✅') &&
+                             tests.email_templates.includes('✅');
+
+    res.json({
+      success: tests.automation_ready,
+      message: tests.automation_ready ? '🎉 All automation features working!' : '⚠️  Some features need attention',
+      tests,
+      printful_api_key_masked: `${printfulApiKey.substring(0, 8)}...${printfulApiKey.substring(printfulApiKey.length - 4)}`,
+      ready_for_automation: tests.automation_ready
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Test failed',
+      error: error.message
+    });
+  }
+});
+
+// GET /api/automation/setup/status
+// Check current configuration status
+router.get('/setup/status', (req, res) => {
+  const printfulApiKey = process.env.PRINTFUL_API_KEY;
+  const configured = !!printfulApiKey;
+
+  res.json({
+    success: true,
+    configuration: {
+      printful_api_key: configured ? 'Configured ✅' : 'Not configured ❌',
+      printful_api_key_masked: configured ? `${printfulApiKey.substring(0, 8)}...${printfulApiKey.substring(printfulApiKey.length - 4)}` : null,
+      server_port: process.env.PORT || 3003,
+      environment: process.env.NODE_ENV || 'development'
+    },
+    ready_for_automation: configured,
+    next_step: configured
+      ? 'Test your setup: GET /api/automation/setup/test'
+      : 'Configure API key: POST /api/automation/setup/printful-key with {"api_key":"YOUR_KEY"}'
+  });
+});
 
 // =====================================================
 // PRINTFUL AUTOMATION ENDPOINTS
