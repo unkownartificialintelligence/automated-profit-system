@@ -21,6 +21,7 @@ import ecommerceRoutes from "./routes/ecommerce-integrations.js";
 import analyticsRoutes from "./routes/analytics.js";
 import enterpriseRoutes from "./routes/enterprise-features.js";
 import infrastructureRoutes from "./routes/infrastructure.js";
+import { validateEnvironment, getEnvironmentInfo } from "./config/env-validator.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -32,6 +33,20 @@ try {
 }
 
 dotenv.config();
+
+// Validate environment configuration on startup
+console.log('\n' + '='.repeat(70));
+console.log('🚀 AUTOMATED PROFIT SYSTEM - Starting Server');
+console.log('='.repeat(70) + '\n');
+
+const envValidation = validateEnvironment({
+  exitOnError: process.env.NODE_ENV === 'production'
+});
+
+if (!envValidation.isValid && process.env.NODE_ENV !== 'production') {
+  console.warn('\n⚠️  Server starting with configuration warnings');
+  console.warn('   Some features may not work correctly\n');
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
