@@ -380,7 +380,7 @@ router.get('/strategy', async (req, res) => {
         '📸 Mock up products on lifestyle photos',
         '💬 Join POD Facebook groups for tips',
         '🔍 Research competitor pricing',
-        '⚡ Start TODAY, don't wait for perfect'
+        '⚡ Start TODAY, do not wait for perfect'
       ]
     });
   } catch (error) {

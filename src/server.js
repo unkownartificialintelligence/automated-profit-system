@@ -11,6 +11,9 @@ import { readFileSync } from "fs";
 import teamProfitsRoutes from "./routes/team-profits.js";
 import productsRoutes from "./routes/products.js";
 import personalRoutes from "./routes/personal.js";
+import automationRoutes from "./routes/automation.js";
+import autoLaunchRoutes from "./routes/auto-launch.js";
+import canvaAutomationRoutes from "./routes/canva-automation.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -197,6 +200,18 @@ app.use("/api/products", productsRoutes);
 // === PERSONAL ACCOUNT ROUTES ===
 // Owner's personal sales tracking (no revenue share - keep 100%)
 app.use("/api/personal", personalRoutes);
+
+// === AUTOMATION ROUTES ===
+// Printful integration, customer outreach, trending product discovery
+app.use("/api/automation", automationRoutes);
+
+// === AUTO-LAUNCH SYSTEM ===
+// Automated trending product discovery, scheduling, and store updates
+app.use("/api/auto-launch", autoLaunchRoutes);
+
+// === CANVA AUTOMATION ===
+// Full automation pipeline: discover → design → list → market
+app.use("/api/canva", canvaAutomationRoutes);
 
 // === FUTURE FEATURES ===
 // 🧠 AI-driven profit optimization
