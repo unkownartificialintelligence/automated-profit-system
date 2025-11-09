@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 import axios from "axios";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -102,9 +103,25 @@ const authLimiter = rateLimit({
 // Import logger
 import logger from './utils/logger.js';
 
+// Import Sentry error monitoring
+import {
+  initSentry,
+  sentryRequestHandler,
+  sentryTracingHandler,
+  sentryErrorHandler
+} from './utils/sentry.js';
+
+// Initialize Sentry FIRST (before any other middleware)
+initSentry(app);
+
 // === SECURITY + MIDDLEWARE ===
+// Sentry request handler must be the first middleware
+app.use(sentryRequestHandler());
+app.use(sentryTracingHandler());
+
 app.use(helmet());
 app.use(cors(corsOptions));
+app.use(cookieParser()); // Parse cookies for CSRF protection
 app.use(express.json({ limit: '10mb' })); // Add size limit to prevent DOS
 
 // Use Winston for HTTP request logging
@@ -115,14 +132,90 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev', {
 // Import validation middleware
 import { sanitizeBody, preventSQLInjection } from './middleware/validation.js';
 
+// Import CSRF protection
+import { csrfTokenGenerator, getCsrfToken } from './middleware/csrf.js';
+
+// Import request ID tracking
+import requestIdMiddleware from './middleware/requestId.js';
+
 // Apply global security middleware
+app.use(requestIdMiddleware); // Track requests with unique IDs
 app.use(sanitizeBody); // Sanitize all string inputs
 app.use(preventSQLInjection); // Prevent SQL injection attempts
+app.use(csrfTokenGenerator); // Generate CSRF tokens for requests
 
 // Apply rate limiting to all API routes
 app.use('/api/', apiLimiter);
 
+/**
+ * @swagger
+ * /api/csrf-token:
+ *   get:
+ *     summary: Get CSRF token
+ *     description: Retrieves a CSRF token for making state-changing requests
+ *     tags: [Security]
+ *     responses:
+ *       200:
+ *         description: CSRF token generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 csrfToken:
+ *                   type: string
+ *                   description: The CSRF token to include in X-CSRF-Token header
+ */
+app.get('/api/csrf-token', getCsrfToken);
+
+// === SWAGGER API DOCUMENTATION ===
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger.js';
+
+// Swagger UI endpoint
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Automated Profit System API Docs'
+}));
+
+// Swagger JSON endpoint
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+
 // === COMPREHENSIVE HEALTH CHECK ===
+/**
+ * @swagger
+ * /api/health:
+ *   get:
+ *     summary: Health check endpoint
+ *     description: Returns comprehensive health status of the system including database, API connections, and environment
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: System is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthCheck'
+ *       503:
+ *         description: System is unhealthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/HealthCheck'
+ *                 - type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                       example: false
+ */
 app.get("/api/health", async (req, res) => {
   const healthCheck = {
     success: true,
@@ -310,6 +403,10 @@ app.get("*", (req, res) => {
 });
 
 // === GLOBAL ERROR HANDLER ===
+// Sentry error handler must be before other error handlers
+app.use(sentryErrorHandler());
+
+// Custom error handler
 app.use((err, req, res, next) => {
   logger.logError(err, req);
 
