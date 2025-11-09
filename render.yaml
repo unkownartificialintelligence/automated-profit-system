@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: automated-profit-system
+    runtime: node
+    region: oregon
+    plan: starter
+    branch: claude/api-health-check-011CUvak7c4T6GGE3V3S7b3F
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PRINTFUL_API_KEY
+        sync: false
+      - key: CANVA_API_KEY
+        sync: false
+    healthCheckPath: /api/health
+    autoDeploy: true
