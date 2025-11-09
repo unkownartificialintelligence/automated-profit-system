@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { admin } from '../services/adminApi';
+import MarketingDashboard from './MarketingDashboard';
 import {
   Users, DollarSign, TrendingUp, Activity, Server, Clock,
-  Eye, EyeOff, Edit, Trash2, Plus, RefreshCw, Shield, UserCheck
+  Eye, EyeOff, Edit, Trash2, Plus, RefreshCw, Shield, UserCheck, Megaphone
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -108,7 +109,7 @@ export default function AdminDashboard() {
 
         {/* Navigation Tabs */}
         <div className="bg-white rounded-lg shadow mb-6">
-          <div className="flex border-b">
+          <div className="flex border-b overflow-x-auto">
             <TabButton
               active={activeTab === 'overview'}
               onClick={() => setActiveTab('overview')}
@@ -128,6 +129,12 @@ export default function AdminDashboard() {
               label="Team Members"
             />
             <TabButton
+              active={activeTab === 'marketing'}
+              onClick={() => setActiveTab('marketing')}
+              icon={<Megaphone className="w-4 h-4" />}
+              label="Marketing"
+            />
+            <TabButton
               active={activeTab === 'activity'}
               onClick={() => setActiveTab('activity')}
               icon={<Clock className="w-4 h-4" />}
@@ -143,13 +150,17 @@ export default function AdminDashboard() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-lg shadow p-6">
-          {activeTab === 'overview' && <OverviewTab dashboardData={dashboardData} />}
-          {activeTab === 'clients' && <ClientsTab clients={clients} onRefresh={loadDashboard} />}
-          {activeTab === 'members' && <MembersTab />}
-          {activeTab === 'activity' && <ActivityTab activities={activities} />}
-          {activeTab === 'system' && <SystemTab health={systemHealth} dashboardData={dashboardData} />}
-        </div>
+        {activeTab === 'marketing' ? (
+          <MarketingDashboard />
+        ) : (
+          <div className="bg-white rounded-lg shadow p-6">
+            {activeTab === 'overview' && <OverviewTab dashboardData={dashboardData} />}
+            {activeTab === 'clients' && <ClientsTab clients={clients} onRefresh={loadDashboard} />}
+            {activeTab === 'members' && <MembersTab />}
+            {activeTab === 'activity' && <ActivityTab activities={activities} />}
+            {activeTab === 'system' && <SystemTab health={systemHealth} dashboardData={dashboardData} />}
+          </div>
+        )}
       </div>
     </div>
   );

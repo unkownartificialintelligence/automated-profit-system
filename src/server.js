@@ -6,7 +6,10 @@ import morgan from "morgan";
 import axios from "axios";
 import path from "path";
 import { fileURLToPath } from "url";
+import cron from "node-cron";
 import adminRouter from "./routes/admin.js";
+import marketingRouter from "./routes/marketing.js";
+import emailService from "./services/emailService.js";
 
 dotenv.config();
 
@@ -25,6 +28,19 @@ app.use(morgan("dev"));
 
 // === ADMIN ROUTES ===
 app.use("/api/admin", adminRouter);
+
+// === MARKETING ROUTES ===
+app.use("/api/marketing", marketingRouter);
+
+// === EMAIL QUEUE PROCESSOR (runs every 5 minutes) ===
+cron.schedule('*/5 * * * *', async () => {
+  console.log('📧 Processing email queue...');
+  try {
+    await emailService.processEmailQueue();
+  } catch (error) {
+    console.error('Email queue processing error:', error);
+  }
+});
 
 // === HEALTH CHECK ===
 app.get("/api/health", (req, res) => {

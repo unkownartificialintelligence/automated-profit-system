@@ -455,9 +455,79 @@ See **[ADMIN-GUIDE.md](./ADMIN-GUIDE.md)** for complete documentation including:
 - Troubleshooting guide
 - Deployment instructions
 
+## 🎯 Marketing Automation
+
+Comprehensive marketing automation for all your audiences: team, customers, clients, partners, and sponsors.
+
+### Quick Setup
+
+1. **Initialize marketing database:**
+   ```bash
+   node setup-marketing.js
+   ```
+
+2. **Configure email (optional):**
+   ```env
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASS=your-app-password
+   ```
+
+3. **Access via Admin Panel:**
+   Navigate to `/admin` → Click "Marketing" tab
+
+### Marketing Features
+
+**Campaign Management:**
+- Create email campaigns for any audience
+- Schedule campaigns or send immediately
+- Track opens, clicks, and conversions
+- A/B testing capabilities
+
+**Contact Management:**
+- 5 Audience Types: Team, Customers, Clients, Partners, Sponsors
+- Tag-based segmentation
+- Engagement scoring
+- Import/export contacts
+
+**Email Templates:**
+- 6 Pre-built templates included
+- Variable replacement system
+- HTML and text versions
+- Usage tracking
+
+**Partnership & Sponsor Management:**
+- Track partnerships and sponsorships
+- Contract management (value, dates, terms)
+- Tier system (Bronze, Silver, Gold, Platinum)
+- Benefits and deliverables tracking
+
+**Automation Workflows:**
+- Trigger-based actions
+- Multi-step sequences
+- Welcome series
+- Nurture campaigns
+
+**Analytics:**
+- Real-time campaign performance
+- Audience engagement metrics
+- Partnership ROI tracking
+- Email deliverability stats
+
+### Complete Marketing Guide
+
+See **[MARKETING-AUTOMATION.md](./MARKETING-AUTOMATION.md)** for complete documentation including:
+- Detailed feature walkthrough
+- API endpoint reference
+- Campaign examples
+- Best practices
+- Troubleshooting guide
+
 ## 📚 Additional Documentation
 
 - **[ADMIN-GUIDE.md](./ADMIN-GUIDE.md)** - Complete admin panel guide
+- **[MARKETING-AUTOMATION.md](./MARKETING-AUTOMATION.md)** - Marketing automation guide
 - **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Detailed deployment guide
 - **[QUICK-REFERENCE.txt](./QUICK-REFERENCE.txt)** - Command cheat sheet
 - **[TEAM_ONBOARDING.md](./TEAM_ONBOARDING.md)** - Team member setup
