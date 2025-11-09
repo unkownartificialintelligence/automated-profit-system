@@ -5,3 +5,15 @@ database.db
 # SQLite build artifacts (from npm rebuild)
 node_modules/sqlite3/build/
 node_modules/sqlite3/node-addon-api/
+
+# Vite build cache
+**/node_modules/.vite/
+
+# Platform-specific binaries
+**/node_modules/@esbuild/
+**/node_modules/@rollup/
+
+# Package config files
+node_modules/**/.prettier*
+node_modules/**/.release-please-config.json
+node_modules/**/eslint.config.js
