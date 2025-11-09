@@ -8,7 +8,20 @@
     "start": "node src/server.js",
     "dev": "nodemon --watch src src/server.js",
     "setup:team-profits": "node src/database/init-team-profits.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_OPTIONS='--experimental-vm-modules' NODE_ENV=test jest --detectOpenHandles --forceExit",
+    "test:watch": "NODE_OPTIONS='--experimental-vm-modules' NODE_ENV=test jest --watch",
+    "test:coverage": "NODE_OPTIONS='--experimental-vm-modules' NODE_ENV=test jest --coverage --detectOpenHandles --forceExit"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "coveragePathIgnorePatterns": ["/node_modules/"],
+    "testMatch": ["**/__tests__/**/*.js", "**/?(*.)+(spec|test).js"],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/server.js"
+    ],
+    "testTimeout": 10000
   },
   "keywords": [],
   "author": "",
@@ -28,9 +41,12 @@
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.7",
     "sqlite3": "^5.1.6",
-    "stripe": "^19.2.0"
+    "stripe": "^19.2.0",
+    "winston": "^3.18.3"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "jest": "^30.2.0",
+    "nodemon": "^3.0.2",
+    "supertest": "^7.1.4"
   }
 }

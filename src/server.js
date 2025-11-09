@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 import axios from "axios";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -26,6 +27,26 @@ try {
 
 dotenv.config();
 
+// === ENVIRONMENT VARIABLE VALIDATION ===
+const requiredEnvVars = ['JWT_SECRET', 'NODE_ENV'];
+const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+if (missingEnvVars.length > 0) {
+  console.error('❌ CRITICAL: Missing required environment variables:');
+  missingEnvVars.forEach(varName => {
+    console.error(`   - ${varName}`);
+  });
+  console.error('\n💡 Please check your .env file against .env.example');
+  process.exit(1);
+}
+
+// Validate JWT_SECRET strength
+if (process.env.JWT_SECRET.length < 32) {
+  console.error('❌ CRITICAL: JWT_SECRET must be at least 32 characters long');
+  console.error('💡 Generate a secure secret with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const PRINTFUL_API_KEY = process.env.PRINTFUL_API_KEY;
@@ -34,11 +55,72 @@ const SERVER_START_TIME = Date.now();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Security + Middleware
+// === CORS CONFIGURATION ===
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:3000', 'http://localhost:5173']; // Defaults for development
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+// === RATE LIMITING ===
+// General API rate limiter
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: {
+    success: false,
+    message: 'Too many requests from this IP, please try again later.'
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+// Strict rate limiter for authentication endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 login attempts per windowMs
+  skipSuccessfulRequests: true, // Don't count successful requests
+  message: {
+    success: false,
+    message: 'Too many login attempts, please try again later.'
+  }
+});
+
+// Import logger
+import logger from './utils/logger.js';
+
+// === SECURITY + MIDDLEWARE ===
 app.use(helmet());
-app.use(cors());
-app.use(express.json());
-app.use(morgan("dev"));
+app.use(cors(corsOptions));
+app.use(express.json({ limit: '10mb' })); // Add size limit to prevent DOS
+
+// Use Winston for HTTP request logging
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev', {
+  stream: logger.stream
+}));
+
+// Import validation middleware
+import { sanitizeBody, preventSQLInjection } from './middleware/validation.js';
+
+// Apply global security middleware
+app.use(sanitizeBody); // Sanitize all string inputs
+app.use(preventSQLInjection); // Prevent SQL injection attempts
+
+// Apply rate limiting to all API routes
+app.use('/api/', apiLimiter);
 
 // === COMPREHENSIVE HEALTH CHECK ===
 app.get("/api/health", async (req, res) => {
@@ -227,8 +309,33 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
+// === GLOBAL ERROR HANDLER ===
+app.use((err, req, res, next) => {
+  logger.logError(err, req);
+
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({
+      success: false,
+      message: 'CORS policy violation'
+    });
+  }
+
+  res.status(err.status || 500).json({
+    success: false,
+    message: process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : err.message,
+    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
+  });
+});
+
 // === START SERVER ===
 app.listen(PORT, () => {
+  logger.info(`Server started successfully on port ${PORT}`, {
+    port: PORT,
+    environment: process.env.NODE_ENV,
+    nodeVersion: process.version
+  });
   console.log(`✅ Server running at http://localhost:${PORT}`);
   console.log("💼 Connected to Printful (if key is valid)");
 });
