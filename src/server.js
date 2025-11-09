@@ -14,6 +14,8 @@ import personalRoutes from "./routes/personal.js";
 import automationRoutes from "./routes/automation.js";
 import autoLaunchRoutes from "./routes/auto-launch.js";
 import canvaAutomationRoutes from "./routes/canva-automation.js";
+import unifiedDashboardRoutes from "./routes/unified-dashboard.js";
+import { userManagerMiddleware } from "./middleware/user-manager.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -39,6 +41,9 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+
+// User Management Middleware (Auto-detects Owner/Client/Team)
+app.use(userManagerMiddleware);
 
 // === COMPREHENSIVE HEALTH CHECK ===
 app.get("/api/health", async (req, res) => {
@@ -188,6 +193,10 @@ app.get("/api/printful/products", async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to fetch products" });
   }
 });
+
+// === UNIFIED DASHBOARD (Auto-detects Owner/Client/Team) ===
+// Automatically adapts to user type with profit tracking
+app.use("/api/dashboard", unifiedDashboardRoutes);
 
 // === TEAM PROFIT SHARING ROUTES ===
 // Tier-based team management with automatic 25% revenue share
