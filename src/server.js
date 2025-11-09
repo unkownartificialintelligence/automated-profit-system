@@ -14,6 +14,7 @@ import personalRoutes from "./routes/personal.js";
 import automationRoutes from "./routes/automation.js";
 import autoLaunchRoutes from "./routes/auto-launch.js";
 import canvaAutomationRoutes from "./routes/canva-automation.js";
+import christmasAutomationRoutes from "./routes/christmas-automation.js";
 import unifiedDashboardRoutes from "./routes/unified-dashboard.js";
 import { userManagerMiddleware } from "./middleware/user-manager.js";
 
@@ -221,6 +222,10 @@ app.use("/api/auto-launch", autoLaunchRoutes);
 // === CANVA AUTOMATION ===
 // Full automation pipeline: discover → design → list → market
 app.use("/api/canva", canvaAutomationRoutes);
+
+// === CHRISTMAS AUTOMATION ===
+// Pre-selected trending Christmas products with daily schedules
+app.use("/api/christmas", christmasAutomationRoutes);
 
 // === FUTURE FEATURES ===
 // 🧠 AI-driven profit optimization
