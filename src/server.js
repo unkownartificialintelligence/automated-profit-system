@@ -15,6 +15,7 @@ import automationRoutes from "./routes/automation.js";
 import autoLaunchRoutes from "./routes/auto-launch.js";
 import canvaAutomationRoutes from "./routes/canva-automation.js";
 import christmasDesignRoutes from "./routes/christmas-design.js";
+import fullAutomationRoutes from "./routes/full-automation.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -217,6 +218,10 @@ app.use("/api/canva", canvaAutomationRoutes);
 // === CHRISTMAS DESIGN TEMPLATES ===
 // Pre-built Christmas design ideas with profit calculations
 app.use("/api/christmas", christmasDesignRoutes);
+
+// === FULL AUTOMATION ===
+// Complete end-to-end automation: design → list → promote (80%+ automation)
+app.use("/api/full-automation", fullAutomationRoutes);
 
 // === FUTURE FEATURES ===
 // 🧠 AI-driven profit optimization
