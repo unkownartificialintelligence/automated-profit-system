@@ -9,7 +9,9 @@ import { fileURLToPath } from "url";
 import cron from "node-cron";
 import adminRouter from "./routes/admin.js";
 import marketingRouter from "./routes/marketing.js";
+import profitsRouter from "./routes/profits.js";
 import emailService from "./services/emailService.js";
+import profitAutomation from "./services/profitAutomation.js";
 
 dotenv.config();
 
@@ -32,6 +34,9 @@ app.use("/api/admin", adminRouter);
 // === MARKETING ROUTES ===
 app.use("/api/marketing", marketingRouter);
 
+// === PROFIT ROUTES ===
+app.use("/api/profits", profitsRouter);
+
 // === EMAIL QUEUE PROCESSOR (runs every 5 minutes) ===
 cron.schedule('*/5 * * * *', async () => {
   console.log('📧 Processing email queue...');
@@ -39,6 +44,16 @@ cron.schedule('*/5 * * * *', async () => {
     await emailService.processEmailQueue();
   } catch (error) {
     console.error('Email queue processing error:', error);
+  }
+});
+
+// === PROFIT AUTOMATION (runs every 6 hours) ===
+cron.schedule('0 */6 * * *', async () => {
+  console.log('💰 Running automated profit cycle...');
+  try {
+    await profitAutomation.runCompleteProfitCycle();
+  } catch (error) {
+    console.error('Profit automation error:', error);
   }
 });
 
