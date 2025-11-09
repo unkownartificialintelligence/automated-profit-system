@@ -12,6 +12,10 @@
     "setup:onboarding": "node src/database/init-onboarding.js",
     "setup:multi-tenant": "node src/database/init-multi-tenant.js",
     "setup:all": "npm run setup:team-profits && npm run setup:payments && npm run setup:onboarding && npm run setup:multi-tenant",
+    "vercel-build": "echo 'Build complete - using existing src'",
+    "vercel:dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "deploy:preview": "vercel",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -36,6 +40,10 @@
     "stripe": "^19.2.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "@vercel/node": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.x"
   }
 }
