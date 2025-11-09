@@ -16,6 +16,11 @@ import autoLaunchRoutes from "./routes/auto-launch.js";
 import canvaAutomationRoutes from "./routes/canva-automation.js";
 import stripePaymentsRoutes from "./routes/stripe-payments.js";
 import onboardingRoutes from "./routes/onboarding.js";
+import aiFeaturesRoutes from "./routes/ai-features.js";
+import ecommerceRoutes from "./routes/ecommerce-integrations.js";
+import analyticsRoutes from "./routes/analytics.js";
+import enterpriseRoutes from "./routes/enterprise-features.js";
+import infrastructureRoutes from "./routes/infrastructure.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -227,10 +232,25 @@ app.use("/api/stripe", stripePaymentsRoutes);
 // Onboarding wizard, email automation, training resources, configuration templates
 app.use("/api/onboarding", onboardingRoutes);
 
-// === FUTURE FEATURES ===
-// 🧠 AI-driven profit optimization
-// 📦 Shopify + Etsy auto-sync endpoints
-// 🧾 Analytics dashboard API
+// === AI FEATURES ===
+// GPT-4 product descriptions, advanced trend predictions, SEO keyword optimization
+app.use("/api/ai", aiFeaturesRoutes);
+
+// === E-COMMERCE INTEGRATIONS ===
+// Shopify, Etsy, WooCommerce integration with OAuth and product sync
+app.use("/api/integrations", ecommerceRoutes);
+
+// === ANALYTICS ===
+// Customer lifetime value, profit forecasting, advanced reporting
+app.use("/api/analytics", analyticsRoutes);
+
+// === ENTERPRISE FEATURES ===
+// AI social media, chatbot, email marketing, price optimization
+app.use("/api/enterprise", enterpriseRoutes);
+
+// === INFRASTRUCTURE ===
+// White-label, API keys, security, monitoring
+app.use("/api/infrastructure", infrastructureRoutes);
 
 // === SERVE FRONTEND (for production) ===
 const frontendPath = path.join(__dirname, "../frontend/dist");
