@@ -14,6 +14,8 @@ import personalRoutes from "./routes/personal.js";
 import automationRoutes from "./routes/automation.js";
 import autoLaunchRoutes from "./routes/auto-launch.js";
 import canvaAutomationRoutes from "./routes/canva-automation.js";
+import stripePaymentsRoutes from "./routes/stripe-payments.js";
+import onboardingRoutes from "./routes/onboarding.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -37,6 +39,10 @@ const __dirname = path.dirname(__filename);
 // Security + Middleware
 app.use(helmet());
 app.use(cors());
+
+// Stripe webhook needs raw body - MUST be before express.json()
+app.use("/api/stripe/webhooks", express.raw({ type: "application/json" }), stripePaymentsRoutes);
+
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -213,9 +219,16 @@ app.use("/api/auto-launch", autoLaunchRoutes);
 // Full automation pipeline: discover → design → list → market
 app.use("/api/canva", canvaAutomationRoutes);
 
+// === STRIPE PAYMENT INTEGRATION ===
+// Subscription packages, checkout, payments, invoices, customer portal
+app.use("/api/stripe", stripePaymentsRoutes);
+
+// === CLIENT ONBOARDING SYSTEM ===
+// Onboarding wizard, email automation, training resources, configuration templates
+app.use("/api/onboarding", onboardingRoutes);
+
 // === FUTURE FEATURES ===
 // 🧠 AI-driven profit optimization
-// 💳 Stripe/PayPal payment integration
 // 📦 Shopify + Etsy auto-sync endpoints
 // 🧾 Analytics dashboard API
 

@@ -8,6 +8,10 @@
     "start": "node src/server.js",
     "dev": "nodemon --watch src src/server.js",
     "setup:team-profits": "node src/database/init-team-profits.js",
+    "setup:payments": "node src/database/init-payments.js",
+    "setup:onboarding": "node src/database/init-onboarding.js",
+    "setup:multi-tenant": "node src/database/init-multi-tenant.js",
+    "setup:all": "npm run setup:team-profits && npm run setup:payments && npm run setup:onboarding && npm run setup:multi-tenant",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +20,7 @@
   "dependencies": {
     "axios": "^1.13.1",
     "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.10.0",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
