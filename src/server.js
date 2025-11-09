@@ -171,6 +171,24 @@ app.use('/api/', apiLimiter);
  */
 app.get('/api/csrf-token', getCsrfToken);
 
+// === TEST SENTRY ERROR (Development Only) ===
+if (process.env.NODE_ENV !== 'production') {
+  /**
+   * @swagger
+   * /api/test-sentry-error:
+   *   get:
+   *     summary: Test Sentry error tracking (Development only)
+   *     description: Triggers a test error to verify Sentry integration
+   *     tags: [Testing]
+   *     responses:
+   *       500:
+   *         description: Test error triggered
+   */
+  app.get('/api/test-sentry-error', (req, res) => {
+    throw new Error('🧪 Test error for Sentry - If you see this in your Sentry dashboard, it\'s working!');
+  });
+}
+
 // === SWAGGER API DOCUMENTATION ===
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
