@@ -12,6 +12,7 @@ import teamProfitsRoutes from "./routes/team-profits.js";
 import productsRoutes from "./routes/products.js";
 import personalRoutes from "./routes/personal.js";
 import automationRoutes from "./routes/automation.js";
+import autoLaunchRoutes from "./routes/auto-launch.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -202,6 +203,10 @@ app.use("/api/personal", personalRoutes);
 // === AUTOMATION ROUTES ===
 // Printful integration, customer outreach, trending product discovery
 app.use("/api/automation", automationRoutes);
+
+// === AUTO-LAUNCH SYSTEM ===
+// Automated trending product discovery, scheduling, and store updates
+app.use("/api/auto-launch", autoLaunchRoutes);
 
 // === FUTURE FEATURES ===
 // 🧠 AI-driven profit optimization
