@@ -1,2 +1,7 @@
 .vercel
 .env*.local
+database.db
+
+# SQLite build artifacts (from npm rebuild)
+node_modules/sqlite3/build/
+node_modules/sqlite3/node-addon-api/
