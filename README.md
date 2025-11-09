@@ -1,4 +1,4 @@
-﻿# 🚀 Automated Profit System - Deployment Scripts
+# 🚀 Automated Profit System - Deployment Scripts
 
 ## ✅ Installation Complete!
 
@@ -104,8 +104,8 @@ vercel login
 ## 🔧 Configuration
 
 Both scripts use these default settings:
-- **Git Name:** MJ Jerzii
-- **Git Email:** mj@jerzii.com
+- **Git Name:** JerziiAI
+- **Git Email:** ukownartificialintelligence@gmail.com.com
 - **GitHub Repo:** https://github.com/unkownartificialintelligence/automated-profit-system.git
 - **Vercel Team:** jerzii-ai
 
