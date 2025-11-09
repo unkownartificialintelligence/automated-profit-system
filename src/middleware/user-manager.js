@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -94,9 +94,8 @@ export class UserManager {
     const salesFile = join(dataDir, "sales.json");
 
     // Create directory if doesn't exist
-    const fs = require("fs");
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
+    if (!existsSync(dataDir)) {
+      mkdirSync(dataDir, { recursive: true });
     }
 
     // Load existing sales
@@ -165,10 +164,9 @@ export class UserManager {
       amount
     });
 
-    const fs = require("fs");
     const teamDir = join(__dirname, "../../data/team");
-    if (!fs.existsSync(teamDir)) {
-      fs.mkdirSync(teamDir, { recursive: true });
+    if (!existsSync(teamDir)) {
+      mkdirSync(teamDir, { recursive: true });
     }
 
     writeFileSync(teamPoolFile, JSON.stringify(poolData, null, 2));
