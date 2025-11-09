@@ -6,7 +6,8 @@ const db = new sqlite3.Database('./database.db');
 class EmailService {
   constructor() {
     // Configure email transporter
-    this.transporter = nodemailer.createTransporter({
+    const createTransport = nodemailer.default?.createTransport || nodemailer.createTransport;
+    this.transporter = createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: process.env.SMTP_PORT || 587,
       secure: false,
