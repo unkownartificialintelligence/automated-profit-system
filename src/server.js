@@ -11,6 +11,7 @@ import { readFileSync } from "fs";
 import teamProfitsRoutes from "./routes/team-profits.js";
 import productsRoutes from "./routes/products.js";
 import personalRoutes from "./routes/personal.js";
+import automationRoutes from "./routes/automation.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -197,6 +198,10 @@ app.use("/api/products", productsRoutes);
 // === PERSONAL ACCOUNT ROUTES ===
 // Owner's personal sales tracking (no revenue share - keep 100%)
 app.use("/api/personal", personalRoutes);
+
+// === AUTOMATION ROUTES ===
+// Printful integration, customer outreach, trending product discovery
+app.use("/api/automation", automationRoutes);
 
 // === FUTURE FEATURES ===
 // 🧠 AI-driven profit optimization
