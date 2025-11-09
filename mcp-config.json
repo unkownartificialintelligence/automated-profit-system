@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "automated-profit-system": {
+      "command": "node",
+      "args": ["/home/user/automated-profit-system/mcp-server.js"],
+      "env": {
+        "SERVER_URL": "http://localhost:3003"
+      }
+    }
+  }
+}
