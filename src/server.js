@@ -14,6 +14,8 @@ import personalRoutes from "./routes/personal.js";
 import automationRoutes from "./routes/automation.js";
 import autoLaunchRoutes from "./routes/auto-launch.js";
 import canvaAutomationRoutes from "./routes/canva-automation.js";
+import globalTrendingRoutes from "./routes/global-trending.js";
+import fullAutomationPipelineRoutes from "./routes/full-automation-pipeline.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -212,6 +214,14 @@ app.use("/api/auto-launch", autoLaunchRoutes);
 // === CANVA AUTOMATION ===
 // Full automation pipeline: discover → design → list → market
 app.use("/api/canva", canvaAutomationRoutes);
+
+// === GLOBAL TRENDING ITEMS ===
+// Fetch trending items from around the globe and add to personal account
+app.use("/api/global-trending", globalTrendingRoutes);
+
+// === FULL AUTOMATION PIPELINE ===
+// Complete end-to-end automation: Design → Printful → Etsy/Shopify → Marketing
+app.use("/api/full-automation", fullAutomationPipelineRoutes);
 
 // === FUTURE FEATURES ===
 // 🧠 AI-driven profit optimization
