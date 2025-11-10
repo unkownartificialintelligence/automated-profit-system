@@ -5,6 +5,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
+import compression from "compression";
 import axios from "axios";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -138,8 +139,16 @@ import { csrfTokenGenerator, getCsrfToken } from './middleware/csrf.js';
 // Import request ID tracking
 import requestIdMiddleware from './middleware/requestId.js';
 
+// Import performance monitoring
+import performanceMonitoring, { performanceStatsHandler } from './middleware/performance.js';
+
+// Import caching
+import cacheMiddleware, { getCacheStats, startCacheCleanup } from './middleware/cache.js';
+
 // Apply global security middleware
 app.use(requestIdMiddleware); // Track requests with unique IDs
+app.use(compression()); // Enable gzip compression
+app.use(performanceMonitoring); // Monitor response times
 app.use(sanitizeBody); // Sanitize all string inputs
 app.use(preventSQLInjection); // Prevent SQL injection attempts
 app.use(csrfTokenGenerator); // Generate CSRF tokens for requests
@@ -170,6 +179,32 @@ app.use('/api/', apiLimiter);
  *                   description: The CSRF token to include in X-CSRF-Token header
  */
 app.get('/api/csrf-token', getCsrfToken);
+
+/**
+ * @swagger
+ * /api/performance:
+ *   get:
+ *     summary: Get performance statistics
+ *     description: Returns detailed performance metrics including response times and slow endpoints
+ *     tags: [Monitoring]
+ *     responses:
+ *       200:
+ *         description: Performance statistics
+ */
+app.get('/api/performance', performanceStatsHandler);
+
+/**
+ * @swagger
+ * /api/cache-stats:
+ *   get:
+ *     summary: Get cache statistics
+ *     description: Returns cache hit/miss ratio and cache size
+ *     tags: [Monitoring]
+ *     responses:
+ *       200:
+ *         description: Cache statistics
+ */
+app.get('/api/cache-stats', getCacheStats);
 
 // === TEST SENTRY ERROR (Development Only) ===
 if (process.env.NODE_ENV !== 'production') {
@@ -234,7 +269,8 @@ app.get('/api-docs.json', (req, res) => {
  *                       type: boolean
  *                       example: false
  */
-app.get("/api/health", async (req, res) => {
+// Cache health checks for 10 seconds
+app.get("/api/health", cacheMiddleware(10000), async (req, res) => {
   const healthCheck = {
     success: true,
     message: "API is healthy and online",
@@ -453,6 +489,14 @@ app.listen(PORT, () => {
   });
   console.log(`✅ Server running at http://localhost:${PORT}`);
   console.log("💼 Connected to Printful (if key is valid)");
+
+  // Start cache cleanup (every 1 minute)
+  startCacheCleanup(60000);
+  logger.info('Performance optimizations active', {
+    compression: 'gzip',
+    caching: 'in-memory',
+    monitoring: 'enabled'
+  });
 });
 
 
