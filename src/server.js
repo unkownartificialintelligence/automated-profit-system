@@ -17,6 +17,7 @@ import canvaAutomationRoutes from "./routes/canva-automation.js";
 import christmasAutomationRoutes from "./routes/christmas-automation.js";
 import marketingAutomationRoutes from "./routes/marketing-automation.js";
 import unifiedDashboardRoutes from "./routes/unified-dashboard.js";
+import fullAutomationRoutes from "./routes/full-automation.js";
 import { userManagerMiddleware } from "./middleware/user-manager.js";
 import { analyticsMiddleware, getAnalyticsSummary } from "./middleware/analytics.js";
 
@@ -254,6 +255,10 @@ app.use("/api/christmas", christmasAutomationRoutes);
 // === MARKETING AUTOMATION ===
 // Multi-stakeholder campaigns: team, customers, clients, partnerships, sponsorships
 app.use("/api/marketing", marketingAutomationRoutes);
+
+// === FULL AUTOMATION ===
+// Complete end-to-end automation: discover → design → list → market (all in one!)
+app.use("/api/full-automation", fullAutomationRoutes);
 
 // === FUTURE FEATURES ===
 // 🧠 AI-driven profit optimization
