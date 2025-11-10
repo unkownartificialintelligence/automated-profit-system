@@ -4,15 +4,49 @@ services:
     runtime: node
     region: oregon
     plan: starter
-    branch: claude/api-health-check-011CUvak7c4T6GGE3V3S7b3F
-    buildCommand: npm install
+    # Automatically deploy from main branch (or specify your production branch)
+    # Remove this line or set to your main branch for production deployments
+    # branch: main
+    buildCommand: npm install && npm rebuild sqlite3
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
+
+      # Security - REQUIRED
+      - key: JWT_SECRET
+        sync: false
+        # IMPORTANT: Set this in Render dashboard to a secure random 32+ character string
+        # Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+      - key: ALLOWED_ORIGINS
+        sync: false
+        # IMPORTANT: Set to your frontend domain(s), comma-separated
+        # Example: https://myapp.com,https://www.myapp.com
+
+      # API Keys
       - key: PRINTFUL_API_KEY
         sync: false
+
       - key: CANVA_API_KEY
         sync: false
+
+      # Optional integrations
+      - key: STRIPE_API_KEY
+        sync: false
+
+      - key: OPENAI_API_KEY
+        sync: false
+
+      # Logging (optional)
+      - key: LOG_LEVEL
+        value: info
+
     healthCheckPath: /api/health
     autoDeploy: true
+
+    # Disk storage for SQLite database and logs
+    disk:
+      name: data
+      mountPath: /opt/render/project/src
+      sizeGB: 1

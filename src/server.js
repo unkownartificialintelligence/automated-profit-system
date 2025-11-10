@@ -3,6 +3,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
+import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
+import compression from "compression";
 import axios from "axios";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -28,6 +31,26 @@ try {
 
 dotenv.config();
 
+// === ENVIRONMENT VARIABLE VALIDATION ===
+const requiredEnvVars = ['JWT_SECRET', 'NODE_ENV'];
+const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+if (missingEnvVars.length > 0) {
+  console.error('❌ CRITICAL: Missing required environment variables:');
+  missingEnvVars.forEach(varName => {
+    console.error(`   - ${varName}`);
+  });
+  console.error('\n💡 Please check your .env file against .env.example');
+  process.exit(1);
+}
+
+// Validate JWT_SECRET strength
+if (process.env.JWT_SECRET.length < 32) {
+  console.error('❌ CRITICAL: JWT_SECRET must be at least 32 characters long');
+  console.error('💡 Generate a secure secret with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const PRINTFUL_API_KEY = process.env.PRINTFUL_API_KEY;
@@ -36,14 +59,220 @@ const SERVER_START_TIME = Date.now();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Security + Middleware
+// === CORS CONFIGURATION ===
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:3000', 'http://localhost:5173']; // Defaults for development
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+// === RATE LIMITING ===
+// General API rate limiter
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: {
+    success: false,
+    message: 'Too many requests from this IP, please try again later.'
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+// Strict rate limiter for authentication endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 login attempts per windowMs
+  skipSuccessfulRequests: true, // Don't count successful requests
+  message: {
+    success: false,
+    message: 'Too many login attempts, please try again later.'
+  }
+});
+
+// Import logger
+import logger from './utils/logger.js';
+
+// Import Sentry error monitoring
+import {
+  initSentry,
+  sentryRequestHandler,
+  sentryTracingHandler,
+  sentryErrorHandler
+} from './utils/sentry.js';
+
+// Initialize Sentry FIRST (before any other middleware)
+initSentry(app);
+
+// === SECURITY + MIDDLEWARE ===
+// Sentry request handler must be the first middleware
+app.use(sentryRequestHandler());
+app.use(sentryTracingHandler());
+
 app.use(helmet());
-app.use(cors());
-app.use(express.json());
-app.use(morgan("dev"));
+app.use(cors(corsOptions));
+app.use(cookieParser()); // Parse cookies for CSRF protection
+app.use(express.json({ limit: '10mb' })); // Add size limit to prevent DOS
+
+// Use Winston for HTTP request logging
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev', {
+  stream: logger.stream
+}));
+
+// Import validation middleware
+import { sanitizeBody, preventSQLInjection } from './middleware/validation.js';
+
+// Import CSRF protection
+import { csrfTokenGenerator, getCsrfToken } from './middleware/csrf.js';
+
+// Import request ID tracking
+import requestIdMiddleware from './middleware/requestId.js';
+
+// Import performance monitoring
+import performanceMonitoring, { performanceStatsHandler } from './middleware/performance.js';
+
+// Import caching
+import cacheMiddleware, { getCacheStats, startCacheCleanup } from './middleware/cache.js';
+
+// Apply global security middleware
+app.use(requestIdMiddleware); // Track requests with unique IDs
+app.use(compression()); // Enable gzip compression
+app.use(performanceMonitoring); // Monitor response times
+app.use(sanitizeBody); // Sanitize all string inputs
+app.use(preventSQLInjection); // Prevent SQL injection attempts
+app.use(csrfTokenGenerator); // Generate CSRF tokens for requests
+
+// Apply rate limiting to all API routes
+app.use('/api/', apiLimiter);
+
+/**
+ * @swagger
+ * /api/csrf-token:
+ *   get:
+ *     summary: Get CSRF token
+ *     description: Retrieves a CSRF token for making state-changing requests
+ *     tags: [Security]
+ *     responses:
+ *       200:
+ *         description: CSRF token generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 csrfToken:
+ *                   type: string
+ *                   description: The CSRF token to include in X-CSRF-Token header
+ */
+app.get('/api/csrf-token', getCsrfToken);
+
+/**
+ * @swagger
+ * /api/performance:
+ *   get:
+ *     summary: Get performance statistics
+ *     description: Returns detailed performance metrics including response times and slow endpoints
+ *     tags: [Monitoring]
+ *     responses:
+ *       200:
+ *         description: Performance statistics
+ */
+app.get('/api/performance', performanceStatsHandler);
+
+/**
+ * @swagger
+ * /api/cache-stats:
+ *   get:
+ *     summary: Get cache statistics
+ *     description: Returns cache hit/miss ratio and cache size
+ *     tags: [Monitoring]
+ *     responses:
+ *       200:
+ *         description: Cache statistics
+ */
+app.get('/api/cache-stats', getCacheStats);
+
+// === TEST SENTRY ERROR (Development Only) ===
+if (process.env.NODE_ENV !== 'production') {
+  /**
+   * @swagger
+   * /api/test-sentry-error:
+   *   get:
+   *     summary: Test Sentry error tracking (Development only)
+   *     description: Triggers a test error to verify Sentry integration
+   *     tags: [Testing]
+   *     responses:
+   *       500:
+   *         description: Test error triggered
+   */
+  app.get('/api/test-sentry-error', (req, res) => {
+    throw new Error('🧪 Test error for Sentry - If you see this in your Sentry dashboard, it\'s working!');
+  });
+}
+
+// === SWAGGER API DOCUMENTATION ===
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger.js';
+
+// Swagger UI endpoint
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Automated Profit System API Docs'
+}));
+
+// Swagger JSON endpoint
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
 
 // === COMPREHENSIVE HEALTH CHECK ===
-app.get("/api/health", async (req, res) => {
+/**
+ * @swagger
+ * /api/health:
+ *   get:
+ *     summary: Health check endpoint
+ *     description: Returns comprehensive health status of the system including database, API connections, and environment
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: System is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthCheck'
+ *       503:
+ *         description: System is unhealthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/HealthCheck'
+ *                 - type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                       example: false
+ */
+// Cache health checks for 10 seconds
+app.get("/api/health", cacheMiddleware(10000), async (req, res) => {
   const healthCheck = {
     success: true,
     message: "API is healthy and online",
@@ -237,10 +466,47 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
+// === GLOBAL ERROR HANDLER ===
+// Sentry error handler must be before other error handlers
+app.use(sentryErrorHandler());
+
+// Custom error handler
+app.use((err, req, res, next) => {
+  logger.logError(err, req);
+
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({
+      success: false,
+      message: 'CORS policy violation'
+    });
+  }
+
+  res.status(err.status || 500).json({
+    success: false,
+    message: process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : err.message,
+    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
+  });
+});
+
 // === START SERVER ===
 app.listen(PORT, () => {
+  logger.info(`Server started successfully on port ${PORT}`, {
+    port: PORT,
+    environment: process.env.NODE_ENV,
+    nodeVersion: process.version
+  });
   console.log(`✅ Server running at http://localhost:${PORT}`);
   console.log("💼 Connected to Printful (if key is valid)");
+
+  // Start cache cleanup (every 1 minute)
+  startCacheCleanup(60000);
+  logger.info('Performance optimizations active', {
+    compression: 'gzip',
+    caching: 'in-memory',
+    monitoring: 'enabled'
+  });
 });
 
 
