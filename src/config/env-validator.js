@@ -358,7 +358,6 @@ export function ensureEnvFile() {
       const template = generateEnvTemplate();
       try {
         writeFileSync(examplePath, template);
-        fs.writeFileSync(examplePath, template);
         console.log('✅ Created .env.example - copy to .env and configure');
       } catch (error) {
         console.error('❌ Failed to create .env.example:', error.message);
