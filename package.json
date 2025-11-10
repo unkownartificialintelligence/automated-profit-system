@@ -13,6 +13,7 @@
     "setup:multi-tenant": "node src/database/init-multi-tenant.js",
     "setup:all": "npm run setup:team-profits && npm run setup:payments && npm run setup:onboarding && npm run setup:multi-tenant",
     "setup:demo": "node scripts/setup-demo-account.js",
+    "view:demo": "node scripts/view-demo-database.js",
     "check:env": "node scripts/check-env.js",
     "check:env:required": "node scripts/check-env.js required",
     "check:env:production": "node scripts/check-env.js production",
