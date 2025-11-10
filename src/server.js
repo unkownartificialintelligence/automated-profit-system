@@ -18,6 +18,7 @@ import christmasAutomationRoutes from "./routes/christmas-automation.js";
 import marketingAutomationRoutes from "./routes/marketing-automation.js";
 import unifiedDashboardRoutes from "./routes/unified-dashboard.js";
 import { userManagerMiddleware } from "./middleware/user-manager.js";
+import { analyticsMiddleware, getAnalyticsSummary } from "./middleware/analytics.js";
 
 // Try to import sqlite3, but don't fail if it's not available
 let sqlite3;
@@ -46,6 +47,9 @@ app.use(morgan("dev"));
 
 // User Management Middleware (Auto-detects Owner/Client/Team)
 app.use(userManagerMiddleware);
+
+// Analytics Middleware (Tracks all API requests and performance)
+app.use(analyticsMiddleware);
 
 // === COMPREHENSIVE HEALTH CHECK ===
 app.get("/api/health", async (req, res) => {
@@ -164,6 +168,25 @@ app.get("/api/health", async (req, res) => {
   // === DETERMINE HTTP STATUS ===
   const httpStatus = healthCheck.success ? 200 : 503;
   res.status(httpStatus).json(healthCheck);
+});
+
+// === ANALYTICS DASHBOARD ===
+app.get("/api/analytics", (req, res) => {
+  try {
+    const summary = getAnalyticsSummary();
+    res.json({
+      success: true,
+      message: "Analytics data retrieved successfully",
+      data: summary,
+    });
+  } catch (error) {
+    console.error("Analytics error:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve analytics data",
+      error: error.message,
+    });
+  }
 });
 
 // === PRINTFUL ROUTES ===

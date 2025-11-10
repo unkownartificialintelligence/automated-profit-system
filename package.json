@@ -9,7 +9,7 @@
     "dev": "nodemon --watch src src/server.js",
     "mcp": "node mcp-server.js",
     "setup:team-profits": "node src/database/init-team-profits.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/api.test.js"
   },
   "keywords": [],
   "author": "",

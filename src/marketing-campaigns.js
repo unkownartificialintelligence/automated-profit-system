@@ -857,7 +857,9 @@ export function generateCampaign(stakeholderType, campaignType, customData = {})
     let result = text;
     Object.keys(customData).forEach(key => {
       const placeholder = `[${key}]`;
-      result = result.replace(new RegExp(placeholder, 'g'), customData[key] || placeholder);
+      // Escape special regex characters in placeholder to avoid character class matching
+      const escapedPlaceholder = placeholder.replace(/[[\]]/g, '\\$&');
+      result = result.replace(new RegExp(escapedPlaceholder, 'g'), customData[key] || placeholder);
     });
     return result;
   };
