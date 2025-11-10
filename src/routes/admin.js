@@ -2,21 +2,39 @@
 import sqlite3 from 'sqlite3';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import rateLimit from 'express-rate-limit';
+import { validateRequired, validateEmail } from '../middleware/validation.js';
 
 const router = express.Router();
 const db = new sqlite3.Database('./database.db');
+
+// Strict rate limiter for authentication endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 login attempts per windowMs
+  skipSuccessfulRequests: true,
+  message: {
+    success: false,
+    message: 'Too many login attempts from this IP, please try again after 15 minutes.'
+  }
+});
 
 // Admin authentication middleware
 const adminAuth = (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ success: false, message: 'No token provided' });
-    
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+
+    if (!process.env.JWT_SECRET) {
+      console.error('CRITICAL: JWT_SECRET not configured in environment variables');
+      return res.status(500).json({ success: false, message: 'Server configuration error' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (decoded.role !== 'admin') {
       return res.status(403).json({ success: false, message: 'Admin access required' });
     }
-    
+
     req.adminId = decoded.id;
     next();
   } catch (error) {
@@ -24,9 +42,13 @@ const adminAuth = (req, res, next) => {
   }
 };
 
-// Admin login
-router.post('/login', (req, res) => {
-  const { email, password } = req.body;
+// Admin login - Protected by strict rate limiting and validation
+router.post('/login',
+  authLimiter,
+  validateRequired(['email', 'password']),
+  validateEmail('email'),
+  (req, res) => {
+    const { email, password } = req.body;
   
   db.get('SELECT * FROM admin_users WHERE email = ?', [email], async (err, admin) => {
     if (err) return res.status(500).json({ success: false, message: 'Server error' });
@@ -34,10 +56,14 @@ router.post('/login', (req, res) => {
     
     const validPassword = await bcrypt.compare(password, admin.password);
     if (!validPassword) return res.status(401).json({ success: false, message: 'Invalid credentials' });
-    
+
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ success: false, message: 'Server configuration error' });
+    }
+
     const token = jwt.sign(
       { id: admin.id, email: admin.email, role: 'admin' },
-      process.env.JWT_SECRET || 'your-secret-key',
+      process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
     
