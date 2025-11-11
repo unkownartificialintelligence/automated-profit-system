@@ -6,14 +6,8 @@
 import * as Sentry from '@sentry/node';
 import logger from './logger.js';
 
-// Try to import profiling, but don't fail if not available
-let ProfilingIntegration;
-try {
-  const profilingModule = await import('@sentry/profiling-node');
-  ProfilingIntegration = profilingModule.ProfilingIntegration;
-} catch (error) {
-  logger.debug('Sentry profiling not available');
-}
+// Profiling integration is optional - disabled in serverless to avoid top-level await
+let ProfilingIntegration = null;
 
 let sentryInitialized = false;
 
@@ -45,14 +39,13 @@ export const initSentry = (app) => {
         // Enable Express.js middleware tracing
         new Sentry.Integrations.Express({ app }),
 
-        // Enable profiling if available
-        ...(ProfilingIntegration ? [new ProfilingIntegration()] : []),
+        // Profiling disabled in serverless (requires top-level await)
 
         // Enable database query tracking
         new Sentry.Integrations.OnUncaughtException({
           onFatalError: (err) => {
             logger.error('Fatal error occurred', { error: err });
-            process.exit(1);
+            if (process.env.VERCEL !== '1') { process.exit(1); }
           }
         }),
 
