@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import sqlite3 from 'sqlite3';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';

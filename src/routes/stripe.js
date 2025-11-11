@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import stripeService from '../services/stripeService.js';
 import { verifyToken } from '../middleware/auth.js';
 
