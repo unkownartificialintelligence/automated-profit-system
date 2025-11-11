@@ -118,6 +118,18 @@ To change these, edit the scripts directly.
 - Always check status before switching accounts
 - Personal account deployment avoids team permission issues
 
+## 📖 Deployment Documentation
+
+### Vercel Deployment (Web UI)
+For deploying via Vercel dashboard (no scripts needed):
+- **[VERCEL_DEPLOYMENT_GUIDE.md](VERCEL_DEPLOYMENT_GUIDE.md)** - Complete guide for deploying via Vercel web interface
+  - Environment variable setup
+  - JWT_SECRET configuration
+  - Troubleshooting common issues
+
+### Render Deployment
+- **[DEPLOYMENT_INSTRUCTIONS.md](DEPLOYMENT_INSTRUCTIONS.md)** - Deploy to Render platform
+
 ## 📞 Need More Help?
 
 Download the complete documentation from the chat:
