@@ -10,6 +10,9 @@ node_modules/sqlite3/node-addon-api/
 # Vite build cache
 **/node_modules/.vite/
 
+# Frontend build output
+frontend/dist/
+
 # Platform-specific binaries
 **/node_modules/@esbuild/
 **/node_modules/@rollup/
