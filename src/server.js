@@ -18,13 +18,16 @@ import automationRoutes from "./routes/automation.js";
 import autoLaunchRoutes from "./routes/auto-launch.js";
 import canvaAutomationRoutes from "./routes/canva-automation.js";
 
-// Try to import sqlite3, but don't fail if it's not available
+// Try to import sqlite3, but don't fail if it's not available (serverless compatible)
 let sqlite3;
-try {
-  sqlite3 = (await import("sqlite3")).default;
-} catch (error) {
-  console.warn("⚠️  SQLite3 module not available, database health checks will be skipped");
-  console.warn("   Run 'npm rebuild sqlite3' to fix this");
+const isVercel = process.env.VERCEL === '1';
+
+if (!isVercel) {
+  try {
+    sqlite3 = (await import("sqlite3")).default;
+  } catch (error) {
+    console.warn("⚠️  SQLite3 module not available, database health checks will be skipped");
+  }
 }
 
 dotenv.config();
@@ -34,18 +37,25 @@ const requiredEnvVars = ['JWT_SECRET', 'NODE_ENV'];
 const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
 if (missingEnvVars.length > 0) {
-  console.error('❌ CRITICAL: Missing required environment variables:');
-  missingEnvVars.forEach(varName => {
-    console.error(`   - ${varName}`);
-  });
-  console.error('\n💡 Please check your .env file against .env.example');
+  const errorMsg = `❌ CRITICAL: Missing required environment variables: ${missingEnvVars.join(', ')}`;
+  console.error(errorMsg);
+
+  // In serverless, throw error instead of exit
+  if (isVercel) {
+    throw new Error(errorMsg + ' - Please add these in Vercel dashboard');
+  }
   process.exit(1);
 }
 
 // Validate JWT_SECRET strength
-if (process.env.JWT_SECRET.length < 32) {
-  console.error('❌ CRITICAL: JWT_SECRET must be at least 32 characters long');
-  console.error('💡 Generate a secure secret with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+if (process.env.JWT_SECRET && process.env.JWT_SECRET.length < 32) {
+  const errorMsg = '❌ CRITICAL: JWT_SECRET must be at least 32 characters long';
+  console.error(errorMsg);
+
+  // In serverless, throw error instead of exit
+  if (isVercel) {
+    throw new Error(errorMsg);
+  }
   process.exit(1);
 }
 
