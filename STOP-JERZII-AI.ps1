@@ -1,4 +1,4 @@
-﻿Write-Host "🛑 Stopping Jerzii AI..." -ForegroundColor Red
+Write-Host "🛑 Stopping Jerzii AI..." -ForegroundColor Red
 Write-Host ""
 
 $ports = @(3000, 5173)

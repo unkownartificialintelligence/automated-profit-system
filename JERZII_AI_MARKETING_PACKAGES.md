@@ -1,4 +1,4 @@
-﻿# 🚀 JERZII AI - AUTOMATED PROFIT SYSTEM
+# 🚀 JERZII AI - AUTOMATED PROFIT SYSTEM
 ## Transform Your Print-on-Demand Business with AI Automation
 
 ---

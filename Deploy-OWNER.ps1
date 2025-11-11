@@ -1,4 +1,4 @@
-﻿# ===============================
+# ===============================
 # PERSONAL OWNER DEPLOYMENT SCRIPT
 # For: MJ Jerzii Personal Account
 # Full Control - No Team Restrictions

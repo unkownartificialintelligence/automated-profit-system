@@ -1,4 +1,4 @@
-﻿Write-Host "`n🚀 Launching Jerzii AI Automated Profit System..." -ForegroundColor Cyan
+Write-Host "`n🚀 Launching Jerzii AI Automated Profit System..." -ForegroundColor Cyan
 
 # --- Kill any ports in use (3000 backend / 5173 frontend) ---
 $ports = @(3000, 5173)

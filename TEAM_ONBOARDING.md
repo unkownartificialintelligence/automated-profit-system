@@ -1,4 +1,4 @@
-﻿# 🚀 JERZII AI - TEAM ONBOARDING GUIDE
+# 🚀 JERZII AI - TEAM ONBOARDING GUIDE
 
 ## Quick Start (5 Minutes)
 

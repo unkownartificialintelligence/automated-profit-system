@@ -1,4 +1,4 @@
-﻿$WshShell = New-Object -comObject WScript.Shell
+$WshShell = New-Object -comObject WScript.Shell
 $Shortcut = $WshShell.CreateShortcut("$Home\Desktop\Start Jerzii AI.lnk")
 $Shortcut.TargetPath = "powershell.exe"
 $Shortcut.Arguments = "-ExecutionPolicy Bypass -File `"C:\Users\jerzi\automated-profit-system\automated-profit-system\START-JERZII-AI.ps1`""

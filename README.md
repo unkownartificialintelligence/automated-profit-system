@@ -1,4 +1,4 @@
-﻿# 🚀 Automated Profit System - Deployment Scripts
+# 🚀 Automated Profit System - Deployment Scripts
 
 ## ✅ Installation Complete!
 

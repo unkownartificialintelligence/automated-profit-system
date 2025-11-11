@@ -1,4 +1,4 @@
-﻿# 📱 JERZII AI - SOCIAL MEDIA POSTS
+# 📱 JERZII AI - SOCIAL MEDIA POSTS
 
 ---
 
