@@ -459,12 +459,32 @@ app.use("/api/canva", canvaAutomationRoutes);
 // 🧾 Analytics dashboard API
 
 // === SERVE FRONTEND (for production) ===
-const frontendPath = path.join(__dirname, "../frontend/dist");
-app.use(express.static(frontendPath));
+// Only serve static frontend files in non-serverless environments
+if (!isVercel) {
+  const frontendPath = path.join(__dirname, "../frontend/dist");
+  app.use(express.static(frontendPath));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
-});
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
+} else {
+  // In serverless (Vercel), return API info for non-API routes
+  app.get("*", (req, res) => {
+    res.status(200).json({
+      success: true,
+      message: "Automated Profit System API",
+      version: "1.0.0",
+      endpoints: {
+        health: "/api/health",
+        docs: "/api-docs",
+        csrf: "/api/csrf-token",
+        performance: "/api/performance",
+        cache: "/api/cache-stats"
+      },
+      documentation: "Visit /api-docs for full API documentation"
+    });
+  });
+}
 
 // === GLOBAL ERROR HANDLER ===
 // Sentry error handler must be before other error handlers
