@@ -11,6 +11,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import os from "os";
 import { readFileSync } from "fs";
+import crypto from "crypto";
 import teamProfitsRoutes from "./routes/team-profits.js";
 import productsRoutes from "./routes/products.js";
 import personalRoutes from "./routes/personal.js";
@@ -34,7 +35,6 @@ dotenv.config();
 // === ENVIRONMENT VARIABLE VALIDATION ===
 // Generate a secure JWT_SECRET if not provided (for development/Vercel deployments)
 if (!process.env.JWT_SECRET) {
-  const crypto = await import('crypto');
   process.env.JWT_SECRET = crypto.randomBytes(32).toString('hex');
   console.warn('⚠️  WARNING: JWT_SECRET not found in environment variables');
   console.warn('   Generated a temporary random JWT_SECRET for this session');
