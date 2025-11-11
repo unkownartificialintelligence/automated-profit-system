@@ -2,7 +2,9 @@
 
 ## Your Complete Onboarding Guide - Start Making Profits NOW!
 
-This guide will get your personal Printful account connected and start the automated profit system in **under 10 minutes**.
+This guide will get your personal Printful account connected and start the automated profit system in **under 15 minutes**.
+
+⚠️ **IMPORTANT**: You must add ALL 7 environment variables in Step 2 & 3 for the system to work. Missing even one critical variable will cause deployment failures.
 
 ---
 
@@ -27,21 +29,44 @@ This guide will get your personal Printful account connected and start the autom
 
 ---
 
-### ✅ STEP 2: Add Printful API Key to Vercel (1 minute)
+### ✅ STEP 2: Add Required Environment Variables to Vercel (3 minutes)
 
 1. **Open Vercel Environment Variables**:
    ```
    https://vercel.com/jerzii-ais-projects/automated-profit-system/settings/environment-variables
    ```
 
-2. **Add the API Key**:
+2. **Add CRITICAL Variables (REQUIRED for app to start)**:
+
+   **Variable 1: JWT_SECRET**
    - Click **"Add New"**
-   - Name: `PRINTFUL_API_KEY`
-   - Value: [paste your Printful API key]
+   - Name: `JWT_SECRET`
+   - Value: `f13d8aee2ff0a947c6d77ca34c326894ee987fdc384c3d37577a39f4851df48a`
    - Check: ✓ Production  ✓ Preview  ✓ Development
    - Click **"Save"**
 
-3. **Vercel will auto-redeploy** (~60-90 seconds)
+   **Variable 2: NODE_ENV**
+   - Click **"Add New"**
+   - Name: `NODE_ENV`
+   - Value: `production`
+   - Check: ✓ Production  ✓ Preview  ✓ Development
+   - Click **"Save"**
+
+   **Variable 3: ALLOWED_ORIGINS**
+   - Click **"Add New"**
+   - Name: `ALLOWED_ORIGINS`
+   - Value: `https://automated-profit-system-git-main-jerzii-ais-projects.vercel.app`
+   - Check: ✓ Production  ✓ Preview  ✓ Development
+   - Click **"Save"**
+
+3. **Add Printful API Key**:
+   - Click **"Add New"**
+   - Name: `PRINTFUL_API_KEY`
+   - Value: [paste your Printful API key from Step 1]
+   - Check: ✓ Production  ✓ Preview  ✓ Development
+   - Click **"Save"**
+
+4. **Vercel will auto-redeploy** (~60-90 seconds)
 
 ---
 
@@ -62,24 +87,25 @@ Copy the entire output (starts with `$2a$10$...`)
 
 **3b. Add to Vercel**:
 
-Go to the same environment variables page and add:
+Go to the same environment variables page and add these 3 more variables:
 
-**Variable 1:**
+**Variable 5: ADMIN_EMAIL**
 - Name: `ADMIN_EMAIL`
 - Value: `your@email.com` (your actual email)
 - Check: ✓ Production  ✓ Preview  ✓ Development
+- Click **"Save"**
 
-**Variable 2:**
+**Variable 6: ADMIN_PASSWORD_HASH**
 - Name: `ADMIN_PASSWORD_HASH`
 - Value: [paste the hash from step 3a]
 - Check: ✓ Production  ✓ Preview  ✓ Development
+- Click **"Save"**
 
-**Variable 3 (Optional):**
+**Variable 7: ADMIN_NAME (Optional)**
 - Name: `ADMIN_NAME`
 - Value: `Your Name`
 - Check: ✓ Production  ✓ Preview  ✓ Development
-
-Click **"Save"** after each one.
+- Click **"Save"**
 
 ---
 
@@ -263,6 +289,21 @@ Body: {
 ---
 
 ## 🆘 TROUBLESHOOTING
+
+### "Function Invocation Failed" or "500 Internal Server Error"
+**MOST COMMON ISSUE** - This means critical environment variables are missing:
+- Check that ALL 7 environment variables from Steps 2 & 3 are added in Vercel
+- **CRITICAL**: JWT_SECRET, NODE_ENV, and ALLOWED_ORIGINS must be present
+- Go to: https://vercel.com/jerzii-ais-projects/automated-profit-system/settings/environment-variables
+- Verify all 7 variables are listed:
+  1. JWT_SECRET
+  2. NODE_ENV
+  3. ALLOWED_ORIGINS
+  4. PRINTFUL_API_KEY
+  5. ADMIN_EMAIL
+  6. ADMIN_PASSWORD_HASH
+  7. ADMIN_NAME (optional)
+- After adding missing variables, wait 90 seconds for auto-redeploy
 
 ### "Invalid API Key" Error
 - Double-check your Printful API key in Vercel env vars
