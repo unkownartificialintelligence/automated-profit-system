@@ -18,17 +18,11 @@ import automationRoutes from "./routes/automation.js";
 import autoLaunchRoutes from "./routes/auto-launch.js";
 import canvaAutomationRoutes from "./routes/canva-automation.js";
 
-// Try to import sqlite3, but don't fail if it's not available (serverless compatible)
-let sqlite3;
-const isVercel = process.env.VERCEL === '1';
+// Detect serverless environment early (before any conditional imports)
+const isVercel = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.VERCEL_ENV;
 
-if (!isVercel) {
-  try {
-    sqlite3 = (await import("sqlite3")).default;
-  } catch (error) {
-    console.warn("⚠️  SQLite3 module not available, database health checks will be skipped");
-  }
-}
+// SQLite3 is only available in local environment, not in serverless
+let sqlite3 = null;
 
 dotenv.config();
 
