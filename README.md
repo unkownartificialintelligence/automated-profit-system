@@ -130,6 +130,16 @@ For deploying via Vercel dashboard (no scripts needed):
 ### Render Deployment
 - **[DEPLOYMENT_INSTRUCTIONS.md](DEPLOYMENT_INSTRUCTIONS.md)** - Deploy to Render platform
 
+## 💰 Start Making Money
+
+### Quick Start Guide
+- **[QUICK_START_PROFIT_GUIDE.md](QUICK_START_PROFIT_GUIDE.md)** - Start generating passive income NOW
+  - Test your deployment
+  - Set up Printful integration
+  - Launch trending products
+  - Full automation workflows
+  - Profit tracking and optimization
+
 ## 📞 Need More Help?
 
 Download the complete documentation from the chat:
