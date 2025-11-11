@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { analytics, automation, trends } from '../services/api';
 import { TrendingUp, DollarSign, Package, Activity, Zap, Eye } from 'lucide-react';
 
