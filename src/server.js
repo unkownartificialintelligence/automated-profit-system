@@ -17,6 +17,7 @@ import personalRoutes from "./routes/personal.js";
 import automationRoutes from "./routes/automation.js";
 import autoLaunchRoutes from "./routes/auto-launch.js";
 import canvaAutomationRoutes from "./routes/canva-automation.js";
+import serverlessAuthRoutes from "./routes/serverless-auth.js";
 
 // Detect serverless environment early (before any conditional imports)
 const isVercel = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.VERCEL_ENV;
@@ -421,6 +422,10 @@ app.get("/api/printful/products", async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to fetch products" });
   }
 });
+
+// === SERVERLESS AUTHENTICATION ===
+// Environment-based auth for Vercel deployment (no database required)
+app.use("/api/auth", serverlessAuthRoutes);
 
 // === TEAM PROFIT SHARING ROUTES ===
 // Tier-based team management with automatic 25% revenue share
