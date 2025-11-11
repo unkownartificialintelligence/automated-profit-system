@@ -1,4 +1,4 @@
-﻿import sqlite3 from 'sqlite3';
+import sqlite3 from 'sqlite3';
 import bcrypt from 'bcryptjs';
 
 const db = new sqlite3.Database('./database.db');

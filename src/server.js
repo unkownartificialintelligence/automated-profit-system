@@ -1,4 +1,4 @@
-﻿import express from "express";
+import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
@@ -20,14 +20,11 @@ import canvaAutomationRoutes from "./routes/canva-automation.js";
 import globalTrendingRoutes from "./routes/global-trending.js";
 import fullAutomationPipelineRoutes from "./routes/full-automation-pipeline.js";
 
-// Try to import sqlite3, but don't fail if it's not available
-let sqlite3;
-try {
-  sqlite3 = (await import("sqlite3")).default;
-} catch (error) {
-  console.warn("⚠️  SQLite3 module not available, database health checks will be skipped");
-  console.warn("   Run 'npm rebuild sqlite3' to fix this");
-}
+// Detect serverless environment early (before any conditional imports)
+const isVercel = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.VERCEL_ENV;
+
+// SQLite3 is only available in local environment, not in serverless
+let sqlite3 = null;
 
 dotenv.config();
 
@@ -36,18 +33,25 @@ const requiredEnvVars = ['JWT_SECRET', 'NODE_ENV'];
 const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
 if (missingEnvVars.length > 0) {
-  console.error('❌ CRITICAL: Missing required environment variables:');
-  missingEnvVars.forEach(varName => {
-    console.error(`   - ${varName}`);
-  });
-  console.error('\n💡 Please check your .env file against .env.example');
+  const errorMsg = `❌ CRITICAL: Missing required environment variables: ${missingEnvVars.join(', ')}`;
+  console.error(errorMsg);
+
+  // In serverless, throw error instead of exit
+  if (isVercel) {
+    throw new Error(errorMsg + ' - Please add these in Vercel dashboard');
+  }
   process.exit(1);
 }
 
 // Validate JWT_SECRET strength
-if (process.env.JWT_SECRET.length < 32) {
-  console.error('❌ CRITICAL: JWT_SECRET must be at least 32 characters long');
-  console.error('💡 Generate a secure secret with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+if (process.env.JWT_SECRET && process.env.JWT_SECRET.length < 32) {
+  const errorMsg = '❌ CRITICAL: JWT_SECRET must be at least 32 characters long';
+  console.error(errorMsg);
+
+  // In serverless, throw error instead of exit
+  if (isVercel) {
+    throw new Error(errorMsg);
+  }
   process.exit(1);
 }
 
@@ -459,12 +463,32 @@ app.use("/api/full-automation", fullAutomationPipelineRoutes);
 // 🧾 Analytics dashboard API
 
 // === SERVE FRONTEND (for production) ===
-const frontendPath = path.join(__dirname, "../frontend/dist");
-app.use(express.static(frontendPath));
+// Only serve static frontend files in non-serverless environments
+if (!isVercel) {
+  const frontendPath = path.join(__dirname, "../frontend/dist");
+  app.use(express.static(frontendPath));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
-});
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
+} else {
+  // In serverless (Vercel), return API info for non-API routes
+  app.get("*", (req, res) => {
+    res.status(200).json({
+      success: true,
+      message: "Automated Profit System API",
+      version: "1.0.0",
+      endpoints: {
+        health: "/api/health",
+        docs: "/api-docs",
+        csrf: "/api/csrf-token",
+        performance: "/api/performance",
+        cache: "/api/cache-stats"
+      },
+      documentation: "Visit /api-docs for full API documentation"
+    });
+  });
+}
 
 // === GLOBAL ERROR HANDLER ===
 // Sentry error handler must be before other error handlers
@@ -491,23 +515,32 @@ app.use((err, req, res, next) => {
 });
 
 // === START SERVER ===
-app.listen(PORT, () => {
-  logger.info(`Server started successfully on port ${PORT}`, {
-    port: PORT,
-    environment: process.env.NODE_ENV,
-    nodeVersion: process.version
-  });
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-  console.log("💼 Connected to Printful (if key is valid)");
+// Only start server if not in serverless environment (Vercel)
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    logger.info(`Server started successfully on port ${PORT}`, {
+      port: PORT,
+      environment: process.env.NODE_ENV,
+      nodeVersion: process.version
+    });
+    console.log(`✅ Server running at http://localhost:${PORT}`);
+    console.log("💼 Connected to Printful (if key is valid)");
 
-  // Start cache cleanup (every 1 minute)
-  startCacheCleanup(60000);
-  logger.info('Performance optimizations active', {
-    compression: 'gzip',
-    caching: 'in-memory',
-    monitoring: 'enabled'
+    // Start cache cleanup (every 1 minute)
+    startCacheCleanup(60000);
+    logger.info('Performance optimizations active', {
+      compression: 'gzip',
+      caching: 'in-memory',
+      monitoring: 'enabled'
+    });
   });
-});
+} else {
+  // Vercel serverless - start cache cleanup immediately
+  startCacheCleanup(60000);
+}
+
+// Export for Vercel serverless
+export default app;
 
 
 

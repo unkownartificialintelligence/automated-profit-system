@@ -1,0 +1,36 @@
+{
+  "environment_variables": [
+    {
+      "name": "JWT_SECRET",
+      "value": "f13d8aee2ff0a947c6d77ca34c326894ee987fdc384c3d37577a39f4851df48a",
+      "target": ["production", "preview", "development"],
+      "required": true
+    },
+    {
+      "name": "NODE_ENV",
+      "value": "production",
+      "target": ["production", "preview", "development"],
+      "required": true
+    },
+    {
+      "name": "ALLOWED_ORIGINS",
+      "value": "https://automated-profit-system.vercel.app",
+      "target": ["production", "preview", "development"],
+      "required": true
+    },
+    {
+      "name": "SENTRY_DSN",
+      "value": "your_sentry_dsn_here",
+      "target": ["production"],
+      "required": false,
+      "note": "Get from https://sentry.io after creating a project"
+    },
+    {
+      "name": "PRINTFUL_API_KEY",
+      "value": "your_printful_api_key_here",
+      "target": ["production", "preview"],
+      "required": false,
+      "note": "Get from https://www.printful.com/dashboard/store"
+    }
+  ]
+}
