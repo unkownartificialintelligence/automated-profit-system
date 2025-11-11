@@ -55,6 +55,13 @@ if (process.env.JWT_SECRET && process.env.JWT_SECRET.length < 32) {
 }
 
 const app = express();
+
+// Trust proxy for serverless environments (Vercel, AWS Lambda, etc.)
+// Required for rate limiting and IP detection behind reverse proxies
+if (isVercel) {
+  app.set('trust proxy', 1);
+}
+
 const PORT = process.env.PORT || 3000;
 const PRINTFUL_API_KEY = process.env.PRINTFUL_API_KEY;
 const SERVER_START_TIME = Date.now();
