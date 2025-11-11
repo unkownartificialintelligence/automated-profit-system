@@ -11,6 +11,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import os from "os";
 import { readFileSync } from "fs";
+import crypto from "crypto";
 import teamProfitsRoutes from "./routes/team-profits.js";
 import productsRoutes from "./routes/products.js";
 import personalRoutes from "./routes/personal.js";
@@ -32,16 +33,18 @@ try {
 dotenv.config();
 
 // === ENVIRONMENT VARIABLE VALIDATION ===
-const requiredEnvVars = ['JWT_SECRET', 'NODE_ENV'];
-const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
-
-if (missingEnvVars.length > 0) {
-  console.error('❌ CRITICAL: Missing required environment variables:');
-  missingEnvVars.forEach(varName => {
-    console.error(`   - ${varName}`);
-  });
-  console.error('\n💡 Please check your .env file against .env.example');
-  process.exit(1);
+// Generate a secure JWT_SECRET if not provided (for development/Vercel deployments)
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = crypto.randomBytes(32).toString('hex');
+  console.warn('⚠️  WARNING: JWT_SECRET not found in environment variables');
+  console.warn('   Generated a temporary random JWT_SECRET for this session');
+  console.warn('   ⚠️  IMPORTANT: Admin sessions will be invalidated on server restart!');
+  console.warn('   📝 For production use, set JWT_SECRET in Vercel dashboard:');
+  console.warn('      1. Go to your Vercel project dashboard');
+  console.warn('      2. Navigate to Settings → Environment Variables');
+  console.warn('      3. Add JWT_SECRET with a secure random value (32+ characters)');
+  console.warn('      4. Generate one with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  console.warn('      5. Redeploy your application\n');
 }
 
 // Validate JWT_SECRET strength
@@ -49,6 +52,12 @@ if (process.env.JWT_SECRET.length < 32) {
   console.error('❌ CRITICAL: JWT_SECRET must be at least 32 characters long');
   console.error('💡 Generate a secure secret with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
   process.exit(1);
+}
+
+// Set NODE_ENV to production if not set (Vercel sets this automatically)
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = 'production';
+  console.log('ℹ️  NODE_ENV not set, defaulting to: production');
 }
 
 const app = express();
