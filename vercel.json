@@ -1,33 +1,17 @@
 {
   "version": 2,
-  "name": "automated-profit-system",
-  "builds": [
+  "rewrites": [
     {
-      "src": "src/server.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/src/server.js"
+      "source": "/api/(.*)",
+      "destination": "/src/server.js"
     },
     {
-      "src": "/(.*)",
-      "dest": "/src/server.js"
+      "source": "/(.*)",
+      "destination": "/src/server.js"
     }
   ],
   "env": {
     "NODE_ENV": "production"
-  },
-  "functions": {
-    "src/server.js": {
-      "maxDuration": 300,
-      "memory": 1024
-    }
   },
   "crons": [
     {
@@ -36,7 +20,6 @@
     }
   ],
   "regions": ["iad1"],
-  "framework": null,
   "installCommand": "npm install",
   "buildCommand": "npm rebuild sqlite3",
   "devCommand": "npm run dev"

@@ -30,7 +30,7 @@
  */
 
 import axios from 'axios';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import cron from 'node-cron';
@@ -94,8 +94,7 @@ function log(level, message, data = {}) {
   // Append to log file
   try {
     const logLine = JSON.stringify(logEntry) + '\n';
-    const fs = await import('fs');
-    fs.appendFileSync(CONFIG.LOG_FILE, logLine);
+    appendFileSync(CONFIG.LOG_FILE, logLine);
   } catch (error) {
     console.error('Failed to write to log file:', error.message);
   }
