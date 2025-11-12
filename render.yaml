@@ -9,6 +9,15 @@ services:
     # branch: main
     buildCommand: npm install && npm rebuild sqlite3
     startCommand: npm start
+
+  # Background automation worker
+  - type: worker
+    name: automation-worker
+    runtime: node
+    region: oregon
+    plan: starter
+    buildCommand: npm install && npm rebuild sqlite3
+    startCommand: node master-automation.js --daemon
     envVars:
       - key: NODE_ENV
         value: production
