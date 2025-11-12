@@ -452,6 +452,67 @@ app.use("/api/global-trending", globalTrendingRoutes);
 // Complete end-to-end automation: Design → Printful → Etsy/Shopify → Marketing
 app.use("/api/full-automation", fullAutomationPipelineRoutes);
 
+// === VERCEL CRON JOB ENDPOINT ===
+// Triggered by Vercel cron jobs to run master automation
+/**
+ * @swagger
+ * /api/automation/cron:
+ *   post:
+ *     summary: Vercel Cron Job Handler
+ *     description: Endpoint triggered by Vercel cron to run master automation
+ *     tags: [Automation]
+ *     security:
+ *       - CronSecret: []
+ *     responses:
+ *       200:
+ *         description: Automation completed successfully
+ *       401:
+ *         description: Unauthorized - Invalid cron secret
+ */
+app.post("/api/automation/cron", async (req, res) => {
+  try {
+    // Verify this is a legitimate cron request
+    const cronSecret = req.headers['authorization'];
+    const expectedSecret = process.env.CRON_SECRET || 'your-cron-secret-here';
+
+    if (cronSecret !== `Bearer ${expectedSecret}`) {
+      logger.logWarning('Unauthorized cron request attempt', { ip: req.ip });
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized'
+      });
+    }
+
+    logger.info('Cron job triggered', { timestamp: new Date().toISOString() });
+
+    // Import and run the master automation
+    const { spawn } = await import('child_process');
+    const automationProcess = spawn('node', ['master-automation.js', '--immediate'], {
+      cwd: path.join(__dirname, '..'),
+      detached: true,
+      stdio: 'ignore'
+    });
+
+    // Don't wait for the process to complete
+    automationProcess.unref();
+
+    res.json({
+      success: true,
+      message: 'Master automation started',
+      timestamp: new Date().toISOString()
+    });
+
+    logger.info('Cron automation started successfully');
+  } catch (error) {
+    logger.logError(error, req);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to start automation',
+      error: process.env.NODE_ENV === 'production' ? undefined : error.message
+    });
+  }
+});
+
 // === FUTURE FEATURES ===
 // 🧠 AI-driven profit optimization
 // 💳 Stripe/PayPal payment integration
