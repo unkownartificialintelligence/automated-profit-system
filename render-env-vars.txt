@@ -1,0 +1,23 @@
+# Render Environment Variables
+# Copy these to Render Dashboard → Your Service → Environment
+# Generated: Wed Nov 12 15:35:26 UTC 2025
+
+NODE_ENV=production
+PORT=10000
+JWT_SECRET=f64c1c7ec382d75018167264a66955b68cc9b889a100aa145e443403b7728295
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,https://automated-profit-system-nf4holr8j-jerzii-ais-projects.vercel.app
+PRINTFUL_API_KEY=UoNNmC4bEyqNuFMyAdtBby2YlVtORc7piy2I9UOS
+# CANVA_API_KEY=(not set - add manually if needed)
+# CANVA_BRAND_TEMPLATE_ID=(not set - add manually if needed)
+# STRIPE_API_KEY=(not set - add manually if needed)
+# OPENAI_API_KEY=(not set - add manually if needed)
+# SENTRY_DSN=(not set - add manually if needed)
+SERVER_URL=https://automated-profit-system.onrender.com
+CRON_SECRET=f9b766f815e103e27070abcc62198ab084a114f3d7bab6b19eefdbe24c2ef608
+MAX_PRODUCTS=5
+GENERATE_DESIGNS=true
+CREATE_LISTINGS=true
+GENERATE_MARKETING=true
+GLOBAL_TRENDING=true
+TRENDING_REGIONS=US,GB,CA,AU,DE,FR,JP,BR,IN,MX
+AUTOMATION_SCHEDULE=0 9 * * 1
