@@ -552,24 +552,30 @@ app.use((err, req, res, next) => {
 });
 
 // === START SERVER ===
-app.listen(PORT, () => {
-  logger.info(`Server started successfully on port ${PORT}`, {
-    port: PORT,
-    environment: process.env.NODE_ENV,
-    nodeVersion: process.version
-  });
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-  console.log("💼 Connected to Printful (if key is valid)");
+// Only start listening if running directly (not on Vercel)
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    logger.info(`Server started successfully on port ${PORT}`, {
+      port: PORT,
+      environment: process.env.NODE_ENV,
+      nodeVersion: process.version
+    });
+    console.log(`✅ Server running at http://localhost:${PORT}`);
+    console.log("💼 Connected to Printful (if key is valid)");
 
-  // Start cache cleanup (every 1 minute)
+    // Start cache cleanup (every 1 minute)
+    startCacheCleanup(60000);
+    logger.info('Performance optimizations active', {
+      compression: 'gzip',
+      caching: 'in-memory',
+      monitoring: 'enabled'
+    });
+  });
+} else {
+  // On Vercel, just start cache cleanup immediately
   startCacheCleanup(60000);
-  logger.info('Performance optimizations active', {
-    compression: 'gzip',
-    caching: 'in-memory',
-    monitoring: 'enabled'
-  });
-});
+  console.log("✅ Running on Vercel serverless");
+}
 
-
-
-
+// Export for Vercel serverless functions
+export default app;
