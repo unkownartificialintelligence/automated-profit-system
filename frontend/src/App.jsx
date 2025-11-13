@@ -1,6 +1,15 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
+import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
+import Products from './pages/Products';
+import TeamProfits from './pages/TeamProfits';
+import PersonalQueue from './pages/PersonalQueue';
+import GlobalTrending from './pages/GlobalTrending';
+import Automation from './pages/Automation';
+import Analytics from './pages/Analytics';
+import Settings from './pages/Settings';
 import './App.css';
 
 function App() {
@@ -26,8 +35,11 @@ function App() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-lg text-gray-600">Loading...</div>
+        </div>
       </div>
     );
   }
@@ -37,22 +49,22 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-blue-600">
-            Jerzii AI - Automated Profit System
-          </h1>
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
-          >
-            Logout
-          </button>
-        </div>
-      </nav>
-      <Dashboard />
-    </div>
+    <Router>
+      <Layout onLogout={handleLogout}>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/team-profits" element={<TeamProfits />} />
+          <Route path="/personal" element={<PersonalQueue />} />
+          <Route path="/trending" element={<GlobalTrending />} />
+          <Route path="/automation" element={<Automation />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Layout>
+    </Router>
   );
 }
 
