@@ -9,13 +9,16 @@ import printfulRoutes from './src/routes/printful.js';
 dotenv.config();
 
 const app = express();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
 // Middleware
 app.use(helmet());
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
+
+// Serve frontend static files
+app.use(express.static('frontend/dist'));
 
 // Printful routes
 app.use('/printful', printfulRoutes);
@@ -34,8 +37,17 @@ app.post('/create-payment-intent', async (req, res) => {
   }
 });
 
-// Default route
-app.get('/', (req, res) => res.send('🚀 Automated Profit System Server is running ✅'));
+// Health check route
+app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'Server is running' }));
+
+// SPA fallback - serve index.html for all non-API routes
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api') && !req.path.startsWith('/printful')) {
+    res.sendFile('frontend/dist/index.html', { root: '.' });
+  } else {
+    res.status(404).json({ error: 'Endpoint not found' });
+  }
+});
 
 // Start server
 const PORT = process.env.PORT || 3000;
