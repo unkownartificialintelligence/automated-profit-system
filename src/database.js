@@ -65,15 +65,23 @@ async function initDatabase() {
       active INTEGER DEFAULT 0,
       last_run TEXT,
       next_scheduled TEXT,
+      next_run TEXT,
+      frequency TEXT DEFAULT 'daily',
       total_runs INTEGER DEFAULT 0,
       success_rate REAL DEFAULT 0,
+      products_created INTEGER DEFAULT 0,
+      revenue_generated REAL DEFAULT 0,
       CHECK (id = 1)
     );
 
     CREATE TABLE IF NOT EXISTS trending_keywords (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       keyword TEXT NOT NULL,
-      country_code TEXT NOT NULL,
+      country_code TEXT,
+      region TEXT,
+      category TEXT,
+      volume INTEGER DEFAULT 0,
+      competition TEXT DEFAULT 'medium',
       articles INTEGER DEFAULT 0,
       traffic TEXT,
       growth REAL DEFAULT 0,
@@ -83,16 +91,21 @@ async function initDatabase() {
 
     CREATE TABLE IF NOT EXISTS activity_log (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      type TEXT NOT NULL,
-      message TEXT NOT NULL,
+      type TEXT,
+      action TEXT,
+      message TEXT,
+      description TEXT,
+      user TEXT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
 
     CREATE TABLE IF NOT EXISTS personal_queue (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
+      title TEXT,
+      task TEXT NOT NULL,
       status TEXT DEFAULT 'pending',
       priority TEXT DEFAULT 'medium',
+      category TEXT,
       revenue REAL DEFAULT 0,
       due_date TEXT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
@@ -113,6 +126,8 @@ async function initDatabase() {
       weekly_reports INTEGER DEFAULT 1,
       theme TEXT DEFAULT 'light',
       language TEXT DEFAULT 'en',
+      profit_settings TEXT,
+      updated_at TEXT,
       CHECK (id = 1)
     );
   `);
