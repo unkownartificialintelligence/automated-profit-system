@@ -5,6 +5,12 @@ import cors from 'cors';
 import helmet from 'helmet';
 import Stripe from 'stripe';
 import printfulRoutes from './src/routes/printful.js';
+import dashboardRoutes from './src/routes/dashboard.js';
+import productsRoutes from './src/routes/products.js';
+import analyticsRoutes from './src/routes/analytics.js';
+import teamProfitsRoutes from './src/routes/team-profits.js';
+import automationRoutes from './src/routes/automation.js';
+import settingsRoutes from './src/routes/settings.js';
 
 dotenv.config();
 
@@ -19,6 +25,14 @@ app.use(express.json());
 
 // Serve frontend static files
 app.use(express.static('frontend/dist'));
+
+// API routes
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/products', productsRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/team-profits', teamProfitsRoutes);
+app.use('/api/automation', automationRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // Printful routes
 app.use('/printful', printfulRoutes);

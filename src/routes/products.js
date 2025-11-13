@@ -1,8 +1,132 @@
 import express from 'express';
 import axios from 'axios';
 import googleTrends from 'google-trends-api';
+import db from '../database.js';
 
 const router = express.Router();
+
+// ============================================
+// PRODUCT CATALOG MANAGEMENT
+// ============================================
+
+// GET /api/products - Get all products with optional filtering
+router.get('/', async (req, res) => {
+  try {
+    const { status, search } = req.query;
+
+    let query = 'SELECT * FROM products WHERE 1=1';
+    const params = [];
+
+    if (status && status !== 'all') {
+      query += ' AND status = ?';
+      params.push(status);
+    }
+
+    if (search) {
+      query += ' AND (name LIKE ? OR sku LIKE ?)';
+      params.push(`%${search}%`, `%${search}%`);
+    }
+
+    query += ' ORDER BY created_at DESC';
+
+    const products = await db.all(query, params);
+
+    // Get statistics
+    const stats = await db.get(`
+      SELECT
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active,
+        SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) as draft,
+        COALESCE(AVG(price), 0) as avgPrice
+      FROM products
+    `);
+
+    res.json({
+      products: products.length > 0 ? products : [],
+      stats: {
+        total: stats?.total || 0,
+        active: stats?.active || 0,
+        draft: stats?.draft || 0,
+        avgPrice: stats?.avgPrice || 0,
+      },
+    });
+  } catch (error) {
+    console.error('Products error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/products/:id - Get single product
+router.get('/:id', async (req, res) => {
+  try {
+    const product = await db.get('SELECT * FROM products WHERE id = ?', [req.params.id]);
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.json(product);
+  } catch (error) {
+    console.error('Product fetch error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/products - Create new product
+router.post('/', async (req, res) => {
+  try {
+    const { name, sku, price, status, description } = req.body;
+
+    if (!name || !sku || !price) {
+      return res.status(400).json({ error: 'name, sku, and price are required' });
+    }
+
+    const result = await db.run(
+      `INSERT INTO products (name, sku, price, status, description, sales, revenue, created_at)
+       VALUES (?, ?, ?, ?, ?, 0, 0, datetime('now'))`,
+      [name, sku, price, status || 'draft', description || '']
+    );
+
+    const product = await db.get('SELECT * FROM products WHERE id = ?', [result.lastID]);
+
+    res.status(201).json(product);
+  } catch (error) {
+    console.error('Product creation error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// PUT /api/products/:id - Update product
+router.put('/:id', async (req, res) => {
+  try {
+    const { name, sku, price, status, description } = req.body;
+
+    await db.run(
+      `UPDATE products
+       SET name = ?, sku = ?, price = ?, status = ?, description = ?
+       WHERE id = ?`,
+      [name, sku, price, status, description, req.params.id]
+    );
+
+    const product = await db.get('SELECT * FROM products WHERE id = ?', [req.params.id]);
+
+    res.json(product);
+  } catch (error) {
+    console.error('Product update error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// DELETE /api/products/:id - Delete product
+router.delete('/:id', async (req, res) => {
+  try {
+    await db.run('DELETE FROM products WHERE id = ?', [req.params.id]);
+    res.json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error('Product deletion error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // ============================================
 // TRENDING PRODUCTS FINDER
