@@ -7,8 +7,8 @@ const baseURL = 'https://api.printful.com';
 
 router.get('/store', async (req, res) => {
     try {
-        const response = await axios.get(\\/store\, {
-            headers: { Authorization: \Bearer \\ }
+        const response = await axios.get(`${baseURL}/store`, {
+            headers: { Authorization: `Bearer ${PRINTFUL_API_KEY}` }
         });
         res.json(response.data);
     } catch (error) {
@@ -19,8 +19,8 @@ router.get('/store', async (req, res) => {
 
 router.get('/products', async (req, res) => {
     try {
-        const response = await axios.get(\\/products\, {
-            headers: { Authorization: \Bearer \\ }
+        const response = await axios.get(`${baseURL}/products`, {
+            headers: { Authorization: `Bearer ${PRINTFUL_API_KEY}` }
         });
         res.json(response.data);
     } catch (error) {
