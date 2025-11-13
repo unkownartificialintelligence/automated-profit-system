@@ -10,6 +10,7 @@ import GlobalTrending from './pages/GlobalTrending';
 import Automation from './pages/Automation';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import { auth } from './services/api';
 import './App.css';
 
 function App() {
@@ -17,11 +18,22 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setUser({ token });
-    }
-    setLoading(false);
+    const initAuth = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await auth.getMe();
+          setUser(response.data.user);
+        } catch (error) {
+          console.error('Auth check failed:', error);
+          localStorage.removeItem('token');
+          setUser(null);
+        }
+      }
+      setLoading(false);
+    };
+
+    initAuth();
   }, []);
 
   const handleLogin = (userData) => {

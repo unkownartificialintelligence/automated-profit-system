@@ -11,6 +11,7 @@ import analyticsRoutes from './src/routes/analytics.js';
 import teamProfitsRoutes from './src/routes/team-profits.js';
 import automationRoutes from './src/routes/automation.js';
 import settingsRoutes from './src/routes/settings.js';
+import authRoutes from './src/routes/auth.js';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use(express.static('frontend/dist'));
 
 // API routes
+app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/analytics', analyticsRoutes);
