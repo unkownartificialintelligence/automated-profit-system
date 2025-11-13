@@ -5,21 +5,21 @@ async function seedDemoData() {
 
   try {
     // 1. Activate Automation
-    console.log('⚡ Activating automation for 11:35 PM daily...');
+    console.log('⚡ Activating automation for 7:00 AM daily...');
     await db.run(`
       UPDATE automation_status
       SET
         active = 1,
         frequency = 'daily',
         last_run = datetime('now', '-1 day'),
-        next_run = datetime('now', 'start of day', '+23 hours', '+35 minutes'),
+        next_run = datetime('now', 'start of day', '+1 day', '+7 hours'),
         products_created = 47,
         revenue_generated = 12847.50,
         total_runs = 15,
         success_rate = 93.3
       WHERE id = 1
     `);
-    console.log('✓ Automation activated - Next run: Tonight at 11:35 PM\n');
+    console.log('✓ Automation activated - Next run: Tomorrow at 7:00 AM\n');
 
     // 2. Create Demo Products
     console.log('📦 Creating demo products...');
@@ -137,8 +137,8 @@ async function seedDemoData() {
 
     console.log('⚡ Automation Status:');
     console.log('   • Status: ACTIVE');
-    console.log('   • Schedule: Daily at 11:35 PM');
-    console.log('   • Next Run: Tonight at 11:35 PM');
+    console.log('   • Schedule: Daily at 7:00 AM');
+    console.log('   • Next Run: Tomorrow at 7:00 AM');
     console.log('   • Products per run: 10');
     console.log('   • Target profit margin: 65-85%\n');
 
