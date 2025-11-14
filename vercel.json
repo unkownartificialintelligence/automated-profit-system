@@ -1,26 +1,38 @@
 {
   "version": 2,
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/src/server.js"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/src/server.js"
+      "source": "/api/:path*",
+      "destination": "/api"
     }
   ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "functions": {
+    "api/index.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
   "env": {
     "NODE_ENV": "production"
   },
   "crons": [
     {
       "path": "/api/automation/cron",
-      "schedule": "0 9 * * 1"
+      "schedule": "0 7 * * *"
     }
-  ],
-  "regions": ["iad1"],
-  "installCommand": "npm install",
-  "buildCommand": "npm rebuild sqlite3",
-  "devCommand": "npm run dev"
+  ]
 }
