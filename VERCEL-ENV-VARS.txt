@@ -1,0 +1,38 @@
+VERCEL ENVIRONMENT VARIABLES - COPY/PASTE TO VERCEL DASHBOARD
+================================================================
+
+Add these 10 variables in Vercel → Settings → Environment Variables
+
+1. JWT_SECRET
+f64c1c7ec382d75018167264a66955b68cc9b889a100aa145e443403b7728295
+
+2. CRON_SECRET
+f9b766f815e103e27070abcc62198ab084a114f3d7bab6b19eefdbe24c2ef608
+
+3. PRINTFUL_API_KEY
+UoNNmC4bEyqNuFMyAdtBby2YlVtORc7piy2I9UOS
+
+4. AUTOMATION_SCHEDULE
+0 7 * * *
+
+5. MAX_PRODUCTS
+10
+
+6. GENERATE_DESIGNS
+true
+
+7. CREATE_LISTINGS
+true
+
+8. GENERATE_MARKETING
+true
+
+9. GLOBAL_TRENDING
+true
+
+10. TRENDING_REGIONS
+US,GB,CA,AU,DE,FR,JP,BR,IN,MX
+
+================================================================
+DEPLOYMENT URL: https://vercel.com/dashboard
+================================================================
