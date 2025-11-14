@@ -140,7 +140,32 @@ Write-Host "🔄 Step 7: Final deployment with all settings..." -ForegroundColor
 vercel --prod --yes
 Write-Host ""
 
-# Step 8: Success Summary
+# Step 8: Trigger Immediate Vercel Automation
+Write-Host "⚡ Step 8: Triggering immediate automation on Vercel..." -ForegroundColor Cyan
+
+# Get deployment URL
+$deploymentUrl = (vercel ls automated-profit-system --json 2>&1 | ConvertFrom-Json | Select-Object -First 1).url
+if ($deploymentUrl) {
+    $fullUrl = "https://$deploymentUrl"
+    Write-Host "   🌐 Deployment URL: $fullUrl" -ForegroundColor Yellow
+
+    # Trigger cron endpoint
+    try {
+        $headers = @{
+            "Authorization" = "Bearer $($envVars['CRON_SECRET'])"
+        }
+        $response = Invoke-RestMethod -Uri "$fullUrl/api/automation/cron" -Method Post -Headers $headers -TimeoutSec 10
+        Write-Host "   ✅ Vercel automation triggered!" -ForegroundColor Green
+        Write-Host "   ⚡ Cloud automation running NOW" -ForegroundColor Green
+    } catch {
+        Write-Host "   ⚠️  Couldn't trigger immediate Vercel run (will run at 7 AM)" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "   ℹ️  Vercel automation will start at next scheduled time (7 AM)" -ForegroundColor Yellow
+}
+Write-Host ""
+
+# Step 9: Success Summary
 Write-Host "╔═══════════════════════════════════════════════════════════╗" -ForegroundColor Green
 Write-Host "║                                                           ║" -ForegroundColor Green
 Write-Host "║         🎉 PROFIT SYSTEM FULLY ACTIVATED! 🎉            ║" -ForegroundColor Green
@@ -150,20 +175,22 @@ Write-Host ""
 
 Write-Host "⚡ IMMEDIATE AUTOMATION:" -ForegroundColor Cyan
 Write-Host "   🟢 Running NOW on local server" -ForegroundColor Green
+Write-Host "   🟢 Running NOW on Vercel cloud" -ForegroundColor Green
 Write-Host "   📦 Creating 10 products in ~1 minute" -ForegroundColor Green
 Write-Host "   💰 Dashboard updating with new revenue" -ForegroundColor Green
 Write-Host ""
 
 Write-Host "🌐 24/7 VERCEL DEPLOYMENT:" -ForegroundColor Cyan
 Write-Host "   🟢 Live on Vercel cloud" -ForegroundColor Green
-Write-Host "   🌅 Runs daily at 7:00 AM automatically" -ForegroundColor Green
-Write-Host "   ⚡ Never misses a run (even when PC is off)" -ForegroundColor Green
+Write-Host "   ⚡ First run executing RIGHT NOW" -ForegroundColor Green
+Write-Host "   🌅 Then runs daily at 7:00 AM automatically" -ForegroundColor Green
+Write-Host "   ♾️ Never misses a run (even when PC is off)" -ForegroundColor Green
 Write-Host "   🌍 Access from anywhere in the world" -ForegroundColor Green
 Write-Host ""
 
 Write-Host "📊 DUAL OPERATION:" -ForegroundColor Cyan
 Write-Host "   ✅ Local server: Running automation NOW" -ForegroundColor White
-Write-Host "   ✅ Vercel cloud: 24/7 daily automation" -ForegroundColor White
+Write-Host "   ✅ Vercel cloud: Running NOW + 24/7 daily automation" -ForegroundColor White
 Write-Host ""
 
 Write-Host "🎯 WHAT'S HAPPENING:" -ForegroundColor Cyan

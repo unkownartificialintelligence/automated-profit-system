@@ -16,11 +16,11 @@
   "crons": [
     {
       "path": "/api/automation/cron",
-      "schedule": "0 9 * * 1"
+      "schedule": "0 7 * * *"
     }
   ],
   "regions": ["iad1"],
   "installCommand": "npm install",
-  "buildCommand": "npm rebuild sqlite3",
+  "buildCommand": "cd frontend && npm install && npm run build && cd .. && npm rebuild sqlite3",
   "devCommand": "npm run dev"
 }
