@@ -29,6 +29,20 @@ router.get('/', async (req, res) => {
       ? ((summary.totalProfit / summary.totalRevenue) * 100).toFixed(1)
       : 0;
 
+    // Get previous period revenue for growth calculation
+    const previousPeriod = await db.get(`
+      SELECT
+        COALESCE(SUM(revenue), 0) as totalRevenue
+      FROM orders
+      WHERE created_at >= date('now', '-${daysBack * 2} days')
+        AND created_at < date('now', '-${daysBack} days')
+    `);
+
+    // Calculate actual revenue growth
+    const revenueGrowth = previousPeriod.totalRevenue > 0
+      ? (((summary.totalRevenue - previousPeriod.totalRevenue) / previousPeriod.totalRevenue) * 100).toFixed(1)
+      : 0;
+
     // Get revenue by month
     const revenueByMonth = await db.all(`
       SELECT
@@ -98,7 +112,7 @@ router.get('/', async (req, res) => {
         totalOrders: summary.totalOrders || 0,
         averageOrderValue: Math.round(summary.averageOrderValue || 0),
         profitMargin: parseFloat(profitMargin),
-        revenueGrowth: 15.3, // TODO: Calculate actual growth
+        revenueGrowth: parseFloat(revenueGrowth),
       },
       revenueByMonth: revenueByMonth.length > 0 ? revenueByMonth : [
         { month: 'Jan', revenue: 8500, profit: 5950, orders: 82 },
